@@ -1,5 +1,6 @@
 /* parse PDB file into data structure similar to Bio.PDB in biopython
  * (model - chain - residue - atom). */
+/* Zion */
 #ifndef PDBParser_HPP
 #define PDBParser_HPP 1
 

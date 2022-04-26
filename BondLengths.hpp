@@ -180,7 +180,7 @@ void fix_bond_lengths (ModelUnit &pep, float tolerance){
 						float a2y = pep.chains[c].residues[r].atoms[a2].xyz[1];
 						float a2z = pep.chains[c].residues[r].atoms[a2].xyz[2];
 						// Calculate the current bond length
-						float b = sqrt(pow(a2x-a1x, 2) + (a2y-a1y, 2) + (a2z-a1z, 2));
+						float b = sqrt((a2x-a1x)*(a2x-a1x) + (a2y-a1y)*(a2y-a1y) + (a2z-a1z)*(a2z-a1z));
 						//Calculate fractional difference between the current and ideal bond lengths
 						float diff = abs(b - b_ideal) / b_ideal;
 						// Check if difference is greater than or equal to 10%. If so, this will need to be fixed.

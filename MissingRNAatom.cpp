@@ -16,6 +16,7 @@ const char* docstring=""
 
 #include <iostream>
 #include "MissingRNAatom.hpp"
+#include "BondLengths.hpp"
 
 int main(int argc,char **argv)
 {
@@ -35,6 +36,7 @@ int main(int argc,char **argv)
     MissingRNAatom(pdb_entry,ideal_rna,option);
     map<string, map<string,vector<float> > >().swap(ideal_rna);
     standardize_pdb_order(pdb_entry);
+    fix_bond_lengths(pdb_entry, 0.10);
     write_pdb_structure(outfile.c_str(),pdb_entry);
     vector<ChainUnit>().swap(pdb_entry.chains);
     return 0;

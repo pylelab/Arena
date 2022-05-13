@@ -160,6 +160,8 @@ void fillMissingRNAatom(ResidueUnit &residue,
                 
     AtomUnit atom;
     atom.xyz.assign(3,0);
+    atom.movable=1; // set movable to 1 if the atom is in the input
+
     for (a=0;a<missing_atom_vec.size();a++)
     {
         atom.name=missing_atom_vec[a];

@@ -21,6 +21,7 @@ struct AtomUnit    // struct for each atom entry
 {
     string name;       // atom name
     vector<float> xyz; // coordinate
+    bool movable;       // 0 if atom is in input, 1 if atom is added by this program
 };
 
 struct ResidueUnit // struct for each residue
@@ -130,6 +131,7 @@ ModelUnit read_pdb_structure(const char *filename,
 
     AtomUnit atom;
     atom.xyz.assign(3,0);
+    atom.movable=0; // set movable to 0 if the atom is in the input
 
     ResidueUnit residue;
 

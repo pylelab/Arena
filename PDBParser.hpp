@@ -21,7 +21,7 @@ struct AtomUnit    // struct for each atom entry
 {
     string name;       // atom name
     vector<float> xyz; // coordinate
-    bool movable;       // 0 if atom is in input, 1 if atom is added by this program
+    bool movable;       // 0 if atom is in input, 1 if atom is added by the program
 };
 
 struct ResidueUnit // struct for each residue
@@ -363,15 +363,20 @@ void standardize_pdb_order(ModelUnit &pep)
                 temp_residue.atoms[order].xyz[1] = pep.chains[c].residues[r].atoms[a].xyz[1];
                 temp_residue.atoms[order].xyz[2] = pep.chains[c].residues[r].atoms[a].xyz[2];
                 temp_residue.atoms[order].name = pep.chains[c].residues[r].atoms[a].name;
+                temp_residue.atoms[order].movable = pep.chains[c].residues[r].atoms[a].movable;
+                //cout<<"pep=>temp r="<<r<<" a="<<a<<" movable="<<pep.chains[c].residues[r].atoms[a].movable<<endl;
             }
             
             // Use temp_residue to update the actual peptide with the correct order
             for (int a=0;a<pep.chains[c].residues[r].atoms.size();a++)
             {
-              pep.chains[c].residues[r].atoms[a].xyz[0] = temp_residue.atoms[a].xyz[0];
-              pep.chains[c].residues[r].atoms[a].xyz[1] = temp_residue.atoms[a].xyz[1];
-              pep.chains[c].residues[r].atoms[a].xyz[2] = temp_residue.atoms[a].xyz[2];
-              pep.chains[c].residues[r].atoms[a].name = temp_residue.atoms[a].name; 
+                pep.chains[c].residues[r].atoms[a].xyz[0] = temp_residue.atoms[a].xyz[0];
+                pep.chains[c].residues[r].atoms[a].xyz[1] = temp_residue.atoms[a].xyz[1];
+                pep.chains[c].residues[r].atoms[a].xyz[2] = temp_residue.atoms[a].xyz[2];
+                pep.chains[c].residues[r].atoms[a].name = temp_residue.atoms[a].name; 
+                pep.chains[c].residues[r].atoms[a].movable = temp_residue.atoms[a].movable; 
+            
+                //cout<<"temp=>pep r="<<r<<" a="<<a<<" movable="<<pep.chains[c].residues[r].atoms[a].movable<<endl;
             }
     
         }

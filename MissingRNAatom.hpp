@@ -160,7 +160,7 @@ void fillMissingRNAatom(ResidueUnit &residue,
                 
     AtomUnit atom;
     atom.xyz.assign(3,0);
-    atom.movable=1; // set movable to 1 if the atom is in the input
+    atom.movable=1; // set movable to 1 if the atom is added
 
     for (a=0;a<missing_atom_vec.size();a++)
     {
@@ -445,6 +445,7 @@ bool MissingRNAatom(ChainUnit &chain,
                 fill_chain.residues[r].atoms.push_back(fill_atom);
                 fill_chain.residues[r].atoms[a].name=fill_residue_map[r][a];
                 fill_chain.residues[r].atoms[a].xyz.assign(3,0);
+                fill_chain.residues[r].atoms[a].movable=1;
             }
         }
 

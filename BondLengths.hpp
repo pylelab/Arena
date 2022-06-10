@@ -144,7 +144,7 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 	float a2y = 0;
 	float a2z = 0;
 
-	bool no_move = true;
+	int moved = 0;
 
 	// Iterate through chains
 	for (int c=0; c<pep.chains.size(); c++){
@@ -174,19 +174,19 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 					// Check which atoms are movable and assign new coordinates to the movable atom
 					if (pep.chains[c].residues[r].atoms[8].movable==1 && pep.chains[c].residues[r+1].atoms[0].movable==0){
 						//cout << "a1 movable " << resname << resnumber << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
-						no_move = false;
+						moved++;
 						pep.chains[c].residues[r].atoms[8].xyz[0] = -(deltaB/b)*(a2x-a1x) + a1x;
 						pep.chains[c].residues[r].atoms[8].xyz[1] = -(deltaB/b)*(a2y-a1y) + a1y;
 						pep.chains[c].residues[r].atoms[8].xyz[2] = -(deltaB/b)*(a2z-a1z) + a1z;
 					} else if (pep.chains[c].residues[r].atoms[8].movable==0 && pep.chains[c].residues[r+1].atoms[0].movable==1){
 						//cout << "a2 movable " << resname << resnumber << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
-						no_move = false;
+						moved++;
 						pep.chains[c].residues[r+1].atoms[0].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
 						pep.chains[c].residues[r+1].atoms[0].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
 						pep.chains[c].residues[r+1].atoms[0].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
 					} else if (pep.chains[c].residues[r].atoms[8].movable==1 && pep.chains[c].residues[r+1].atoms[0].movable==1){
 						//cout << "both movable " << resname << resnumber << "b: " << b << "b_ideal " << b_ideal << "diff: " << diff << endl;
-						no_move = false;
+						moved++;
 						// move each atom half the required distance
 						pep.chains[c].residues[r+1].atoms[0].xyz[0] = 0.5*((deltaB/b)*(a2x-a1x)) + a2x;
 						pep.chains[c].residues[r+1].atoms[0].xyz[1] = 0.5*((deltaB/b)*(a2y-a1y)) + a2y;
@@ -266,19 +266,19 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 						// Check which atoms are movable and assign new coordinates to the movable atom
 						if (pep.chains[c].residues[r].atoms[a1].movable==1 && pep.chains[c].residues[r].atoms[a2].movable==0){
 							//cout << "a1 movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
-							no_move = false;
+							moved++;
 							pep.chains[c].residues[r].atoms[a1].xyz[0] = -(deltaB/b)*(a2x-a1x) + a1x;
 							pep.chains[c].residues[r].atoms[a1].xyz[1] = -(deltaB/b)*(a2y-a1y) + a1y;
 							pep.chains[c].residues[r].atoms[a1].xyz[2] = -(deltaB/b)*(a2z-a1z) + a1z;
 						} else if (pep.chains[c].residues[r].atoms[a1].movable==0 && pep.chains[c].residues[r].atoms[a2].movable==1){
 							//cout << "a2 movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
-							no_move = false;
+							moved++;
 							pep.chains[c].residues[r].atoms[a2].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
 							pep.chains[c].residues[r].atoms[a2].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
 							pep.chains[c].residues[r].atoms[a2].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
 						} else if (pep.chains[c].residues[r].atoms[a1].movable==1 && pep.chains[c].residues[r].atoms[a2].movable==1){
 							//cout << "both movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
-							no_move = false;
+							moved++;
 							// move each atom half the required distance
 							pep.chains[c].residues[r].atoms[a2].xyz[0] = 0.5*((deltaB/b)*(a2x-a1x)) + a2x;
 							pep.chains[c].residues[r].atoms[a2].xyz[1] = 0.5*((deltaB/b)*(a2y-a1y)) + a2y;
@@ -296,12 +296,6 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 		}
 	}
 
-	if (no_move){
-		// no atoms moved
-		return 0;
-	} else{
-		// at least one atom was moved
-		return 1;
-	}
+	return moved;
 }
 #endif

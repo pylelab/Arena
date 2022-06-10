@@ -56,8 +56,9 @@ int main(int argc,char **argv)
     for (int t=0; t<100; t++){
     	int moved = fix_bond_lengths(pdb_entry, tolerance);
     	// if no atoms are moved, immediately break out of this for loop
-    	if (!moved){
-    		cout << "broke out at t= " << t << endl;
+    	//cout << "moved= " << moved << endl;
+    	if (moved==0){
+    		//cout << "broke out at t= " << t << endl;
     		break;
     	}
     }

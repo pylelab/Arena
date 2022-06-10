@@ -187,9 +187,13 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 					} else if (pep.chains[c].residues[r].atoms[8].movable==1 && pep.chains[c].residues[r+1].atoms[0].movable==1){
 						//cout << "both movable " << resname << resnumber << "b: " << b << "b_ideal " << b_ideal << "diff: " << diff << endl;
 						no_move = false;
-						pep.chains[c].residues[r+1].atoms[0].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
-						pep.chains[c].residues[r+1].atoms[0].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
-						pep.chains[c].residues[r+1].atoms[0].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
+						// move each atom half the required distance
+						pep.chains[c].residues[r+1].atoms[0].xyz[0] = 0.5*((deltaB/b)*(a2x-a1x)) + a2x;
+						pep.chains[c].residues[r+1].atoms[0].xyz[1] = 0.5*((deltaB/b)*(a2y-a1y)) + a2y;
+						pep.chains[c].residues[r+1].atoms[0].xyz[2] = 0.5*((deltaB/b)*(a2z-a1z)) + a2z;
+						pep.chains[c].residues[r].atoms[8].xyz[0] = 0.5*(-(deltaB/b)*(a2x-a1x)) + a1x;
+						pep.chains[c].residues[r].atoms[8].xyz[1] = 0.5*(-(deltaB/b)*(a2y-a1y)) + a1y;
+						pep.chains[c].residues[r].atoms[8].xyz[2] = 0.5*(-(deltaB/b)*(a2z-a1z)) + a1z;
 					}
 				}
 			}
@@ -275,9 +279,13 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 						} else if (pep.chains[c].residues[r].atoms[a1].movable==1 && pep.chains[c].residues[r].atoms[a2].movable==1){
 							//cout << "both movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
 							no_move = false;
-							pep.chains[c].residues[r].atoms[a2].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
-							pep.chains[c].residues[r].atoms[a2].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
-							pep.chains[c].residues[r].atoms[a2].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
+							// move each atom half the required distance
+							pep.chains[c].residues[r].atoms[a2].xyz[0] = 0.5*((deltaB/b)*(a2x-a1x)) + a2x;
+							pep.chains[c].residues[r].atoms[a2].xyz[1] = 0.5*((deltaB/b)*(a2y-a1y)) + a2y;
+							pep.chains[c].residues[r].atoms[a2].xyz[2] = 0.5*((deltaB/b)*(a2z-a1z)) + a2z;
+							pep.chains[c].residues[r].atoms[a1].xyz[0] = 0.5*(-(deltaB/b)*(a2x-a1x)) + a1x;
+							pep.chains[c].residues[r].atoms[a1].xyz[1] = 0.5*(-(deltaB/b)*(a2y-a1y)) + a1y;
+							pep.chains[c].residues[r].atoms[a1].xyz[2] = 0.5*(-(deltaB/b)*(a2z-a1z)) + a1z;
 						}
 							//if (b == 0){ // if atoms exactly overlapping
 								// generate random direction

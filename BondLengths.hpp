@@ -128,7 +128,7 @@ float U_bonds[20][20] = {
 // Bond between O3' and P of the next residue
 float OSP = 1.610;
 
-void fix_bond_lengths (ModelUnit &pep, float tolerance){
+int fix_bond_lengths (ModelUnit &pep, float tolerance){
 	
 	// Initialize variables
 	float b_ideal = 0;
@@ -143,6 +143,8 @@ void fix_bond_lengths (ModelUnit &pep, float tolerance){
 	float a2x = 0;
 	float a2y = 0;
 	float a2z = 0;
+
+	bool no_move = true;
 
 	// Iterate through chains
 	for (int c=0; c<pep.chains.size(); c++){
@@ -168,31 +170,31 @@ void fix_bond_lengths (ModelUnit &pep, float tolerance){
 				diff = abs(b - b_ideal) / b_ideal;
 				// Check if difference is greater than or equal to the allowed tolerance
 				if (diff >= tolerance){
-					cout << "we're gonna fix OSP" << endl;
 					deltaB = b - b_ideal; // difference in bond length from ideal
 					// Check which atoms are movable and assign new coordinates to the movable atom
 					if (pep.chains[c].residues[r].atoms[8].movable==1 && pep.chains[c].residues[r+1].atoms[0].movable==0){
-						cout << "a1 movable " << resname << resnumber << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+						//cout << "a1 movable " << resname << resnumber << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+						no_move = false;
 						pep.chains[c].residues[r].atoms[8].xyz[0] = -(deltaB/b)*(a2x-a1x) + a1x;
 						pep.chains[c].residues[r].atoms[8].xyz[1] = -(deltaB/b)*(a2y-a1y) + a1y;
 						pep.chains[c].residues[r].atoms[8].xyz[2] = -(deltaB/b)*(a2z-a1z) + a1z;
 					} else if (pep.chains[c].residues[r].atoms[8].movable==0 && pep.chains[c].residues[r+1].atoms[0].movable==1){
-						cout << "a2 movable " << resname << resnumber << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+						//cout << "a2 movable " << resname << resnumber << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+						no_move = false;
 						pep.chains[c].residues[r+1].atoms[0].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
 						pep.chains[c].residues[r+1].atoms[0].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
 						pep.chains[c].residues[r+1].atoms[0].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
 					} else if (pep.chains[c].residues[r].atoms[8].movable==1 && pep.chains[c].residues[r+1].atoms[0].movable==1){
-						cout << "both movable " << resname << resnumber << "b: " << b << "b_ideal " << b_ideal << "diff: " << diff << endl;
+						//cout << "both movable " << resname << resnumber << "b: " << b << "b_ideal " << b_ideal << "diff: " << diff << endl;
+						no_move = false;
 						pep.chains[c].residues[r+1].atoms[0].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
 						pep.chains[c].residues[r+1].atoms[0].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
 						pep.chains[c].residues[r+1].atoms[0].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
-					} else {
-						cout << resnumber << " all good" << endl;
 					}
 				}
 			}
 			/* */
-			cout << "finished special case" << endl;
+
 			// bool check_OSP = false; // check O3'-P bond
 			// Iterate through all pairs of backbone atoms
 			for (int a1=0; a1<12; a1++){
@@ -208,7 +210,7 @@ void fix_bond_lengths (ModelUnit &pep, float tolerance){
 					bool pass = false;
 					// if neither atom is movable, immediately continue
 					if (pep.chains[c].residues[r].atoms[a1].movable==0 && pep.chains[c].residues[r].atoms[a2].movable==0){
-						cout << "none movable " << resname << resnumber << atom1 << atom2 << endl;
+						//cout << "none movable " << resname << resnumber << atom1 << atom2 << endl;
 						continue;
 					}
 					//cout << atom1 << pep.chains[c].residues[r].atoms[a1].movable << endl;
@@ -255,27 +257,27 @@ void fix_bond_lengths (ModelUnit &pep, float tolerance){
 					diff = abs(b - b_ideal) / b_ideal;
 					// Check if difference is greater than or equal to the allowed tolerance
 					if (diff >= tolerance){
-						cout << "we're gonna fix a bond" << endl;
 						//cout << resname << resnumber << atom1 << atom2 << b << ' ' << b_ideal << ' ' << diff <<endl;
 						deltaB = b - b_ideal; // difference in bond length from ideal
 						// Check which atoms are movable and assign new coordinates to the movable atom
 						if (pep.chains[c].residues[r].atoms[a1].movable==1 && pep.chains[c].residues[r].atoms[a2].movable==0){
-							cout << "a1 movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+							//cout << "a1 movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+							no_move = false;
 							pep.chains[c].residues[r].atoms[a1].xyz[0] = -(deltaB/b)*(a2x-a1x) + a1x;
 							pep.chains[c].residues[r].atoms[a1].xyz[1] = -(deltaB/b)*(a2y-a1y) + a1y;
 							pep.chains[c].residues[r].atoms[a1].xyz[2] = -(deltaB/b)*(a2z-a1z) + a1z;
 						} else if (pep.chains[c].residues[r].atoms[a1].movable==0 && pep.chains[c].residues[r].atoms[a2].movable==1){
-							cout << "a2 movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+							//cout << "a2 movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+							no_move = false;
 							pep.chains[c].residues[r].atoms[a2].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
 							pep.chains[c].residues[r].atoms[a2].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
 							pep.chains[c].residues[r].atoms[a2].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
 						} else if (pep.chains[c].residues[r].atoms[a1].movable==1 && pep.chains[c].residues[r].atoms[a2].movable==1){
-							cout << "both movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+							//cout << "both movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
+							no_move = false;
 							pep.chains[c].residues[r].atoms[a2].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
 							pep.chains[c].residues[r].atoms[a2].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
 							pep.chains[c].residues[r].atoms[a2].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
-						} else {
-							cout << resnumber << "all good" << endl;
 						}
 							//if (b == 0){ // if atoms exactly overlapping
 								// generate random direction
@@ -284,6 +286,14 @@ void fix_bond_lengths (ModelUnit &pep, float tolerance){
 				}
 			}
 		}
+	}
+
+	if (no_move){
+		// no atoms moved
+		return 0;
+	} else{
+		// at least one atom was moved
+		return 1;
 	}
 }
 #endif

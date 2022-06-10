@@ -15,6 +15,7 @@ const char* docstring=""
 ;
 
 #include <iostream>
+#include <iomanip>
 #include "MissingRNAatom.hpp"
 #include "BondLengths.hpp"
 
@@ -28,15 +29,38 @@ int main(int argc,char **argv)
     string infile =argv[1];
     string outfile=argv[2];
     int option    =(argc>3)?atoi(argv[3]):0;
+    double tolerance =(argc>4)?atoi(argv[4]):0.01; // default tolerance is 1%
     
     int atomic_detail=2;
     int allowX=0;
     ModelUnit pdb_entry=read_pdb_structure(argv[1],atomic_detail,allowX);
     map<string, map<string,vector<float> > >ideal_rna=parse_ideal_rna();
     MissingRNAatom(pdb_entry,ideal_rna,option);
+
     map<string, map<string,vector<float> > >().swap(ideal_rna);
+    /*for (int r=0;r<pdb_entry.chains[0].residues.size();r++)
+    {
+        for (int a=0;a<pdb_entry.chains[0].residues[r].atoms.size();a++)
+        {
+            cout<<"r="<<r<<" a="<<a<<" movable="<<pdb_entry.chains[0].residues[r].atoms[a].movable<<endl;
+        }
+    }*/   
     standardize_pdb_order(pdb_entry);
-    fix_bond_lengths(pdb_entry, 0.10);
+    //for (int r=0;r<pdb_entry.chains[0].residues.size();r++)
+    //{
+    //    for (int a=0;a<pdb_entry.chains[0].residues[r].atoms.size();a++)
+     //   {
+     //       cout<<"r="<<r<<" a="<<a<<" movable="<<pdb_entry.chains[0].residues[r].atoms[a].movable<<endl;
+    //    }
+    //}
+    for (int t=0; t<100; t++){
+    	int moved = fix_bond_lengths(pdb_entry, tolerance);
+    	// if no atoms are moved, immediately break out of this for loop
+    	if (!moved){
+    		cout << "broke out at t= " << t << endl;
+    		break;
+    	}
+    }
     write_pdb_structure(outfile.c_str(),pdb_entry);
     vector<ChainUnit>().swap(pdb_entry.chains);
     return 0;

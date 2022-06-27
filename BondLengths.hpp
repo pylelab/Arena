@@ -175,25 +175,25 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 					if (pep.chains[c].residues[r].atoms[8].movable==1 && pep.chains[c].residues[r+1].atoms[0].movable==0){
 						//cout << "a1 movable " << resname << resnumber << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
 						moved++;
-						pep.chains[c].residues[r].atoms[8].xyz[0] = -(deltaB/b)*(a2x-a1x) + a1x;
-						pep.chains[c].residues[r].atoms[8].xyz[1] = -(deltaB/b)*(a2y-a1y) + a1y;
-						pep.chains[c].residues[r].atoms[8].xyz[2] = -(deltaB/b)*(a2z-a1z) + a1z;
+						pep.chains[c].residues[r].atoms[8].xyz[0] = (deltaB/b)*(a2x-a1x) + a1x;
+						pep.chains[c].residues[r].atoms[8].xyz[1] = (deltaB/b)*(a2y-a1y) + a1y;
+						pep.chains[c].residues[r].atoms[8].xyz[2] = (deltaB/b)*(a2z-a1z) + a1z;
 					} else if (pep.chains[c].residues[r].atoms[8].movable==0 && pep.chains[c].residues[r+1].atoms[0].movable==1){
 						//cout << "a2 movable " << resname << resnumber << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
 						moved++;
-						pep.chains[c].residues[r+1].atoms[0].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
-						pep.chains[c].residues[r+1].atoms[0].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
-						pep.chains[c].residues[r+1].atoms[0].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
+						pep.chains[c].residues[r+1].atoms[0].xyz[0] = (deltaB/b)*(a1x-a2x) + a2x;
+						pep.chains[c].residues[r+1].atoms[0].xyz[1] = (deltaB/b)*(a1y-a2y) + a2y;
+						pep.chains[c].residues[r+1].atoms[0].xyz[2] = (deltaB/b)*(a1z-a2z) + a2z;
 					} else if (pep.chains[c].residues[r].atoms[8].movable==1 && pep.chains[c].residues[r+1].atoms[0].movable==1){
 						//cout << "both movable " << resname << resnumber << "b: " << b << "b_ideal " << b_ideal << "diff: " << diff << endl;
 						moved++;
 						// move each atom half the required distance
-						pep.chains[c].residues[r+1].atoms[0].xyz[0] = 0.5*((deltaB/b)*(a2x-a1x)) + a2x;
-						pep.chains[c].residues[r+1].atoms[0].xyz[1] = 0.5*((deltaB/b)*(a2y-a1y)) + a2y;
-						pep.chains[c].residues[r+1].atoms[0].xyz[2] = 0.5*((deltaB/b)*(a2z-a1z)) + a2z;
-						pep.chains[c].residues[r].atoms[8].xyz[0] = 0.5*(-(deltaB/b)*(a2x-a1x)) + a1x;
-						pep.chains[c].residues[r].atoms[8].xyz[1] = 0.5*(-(deltaB/b)*(a2y-a1y)) + a1y;
-						pep.chains[c].residues[r].atoms[8].xyz[2] = 0.5*(-(deltaB/b)*(a2z-a1z)) + a1z;
+						pep.chains[c].residues[r+1].atoms[0].xyz[0] = 0.5*((deltaB/b)*(a1x-a2x)) + a2x;
+						pep.chains[c].residues[r+1].atoms[0].xyz[1] = 0.5*((deltaB/b)*(a1y-a2y)) + a2y;
+						pep.chains[c].residues[r+1].atoms[0].xyz[2] = 0.5*((deltaB/b)*(a1z-a2z)) + a2z;
+						pep.chains[c].residues[r].atoms[8].xyz[0] = 0.5*((deltaB/b)*(a2x-a1x)) + a1x;
+						pep.chains[c].residues[r].atoms[8].xyz[1] = 0.5*((deltaB/b)*(a2y-a1y)) + a1y;
+						pep.chains[c].residues[r].atoms[8].xyz[2] = 0.5*((deltaB/b)*(a2z-a1z)) + a1z;
 					}
 				}
 			}
@@ -201,14 +201,14 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 
 			// bool check_OSP = false; // check O3'-P bond
 			// Iterate through all pairs of backbone atoms
-			for (int a1=0; a1<12; a1++){
+			for (int a1=0; a1<pep.chains[c].residues[r].atoms.size(); a1++){
 				string atom1 = pep.chains[c].residues[r].atoms[a1].name;
 				//cout << "atom1" << endl;
 				// int r2 = r;
 				// if (a1 == 8){
 				// 	r2 = r + 1; // set r2 equal to the next residue for the O3'-P bond
 				// }
-				for (a2=a1+1; a2<12;a2++){
+				for (a2=a1+1; a2<pep.chains[c].residues[r].atoms.size(); a2++){
 					//cout << "atom2" << endl;
 					string atom2 = pep.chains[c].residues[r].atoms[a2].name;
 					bool pass = false;
@@ -267,25 +267,25 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 						if (pep.chains[c].residues[r].atoms[a1].movable==1 && pep.chains[c].residues[r].atoms[a2].movable==0){
 							//cout << "a1 movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
 							moved++;
-							pep.chains[c].residues[r].atoms[a1].xyz[0] = -(deltaB/b)*(a2x-a1x) + a1x;
-							pep.chains[c].residues[r].atoms[a1].xyz[1] = -(deltaB/b)*(a2y-a1y) + a1y;
-							pep.chains[c].residues[r].atoms[a1].xyz[2] = -(deltaB/b)*(a2z-a1z) + a1z;
+							pep.chains[c].residues[r].atoms[a1].xyz[0] = (deltaB/b)*(a2x-a1x) + a1x;
+							pep.chains[c].residues[r].atoms[a1].xyz[1] = (deltaB/b)*(a2y-a1y) + a1y;
+							pep.chains[c].residues[r].atoms[a1].xyz[2] = (deltaB/b)*(a2z-a1z) + a1z;
 						} else if (pep.chains[c].residues[r].atoms[a1].movable==0 && pep.chains[c].residues[r].atoms[a2].movable==1){
 							//cout << "a2 movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
 							moved++;
-							pep.chains[c].residues[r].atoms[a2].xyz[0] = (deltaB/b)*(a2x-a1x) + a2x;
-							pep.chains[c].residues[r].atoms[a2].xyz[1] = (deltaB/b)*(a2y-a1y) + a2y;
-							pep.chains[c].residues[r].atoms[a2].xyz[2] = (deltaB/b)*(a2z-a1z) + a2z;
+							pep.chains[c].residues[r].atoms[a2].xyz[0] = (deltaB/b)*(a1x-a2x) + a2x;
+							pep.chains[c].residues[r].atoms[a2].xyz[1] = (deltaB/b)*(a1y-a2y) + a2y;
+							pep.chains[c].residues[r].atoms[a2].xyz[2] = (deltaB/b)*(a1z-a2z) + a2z;
 						} else if (pep.chains[c].residues[r].atoms[a1].movable==1 && pep.chains[c].residues[r].atoms[a2].movable==1){
 							//cout << "both movable " << resname << resnumber << atom1 << atom2 << "b: " << b << "b_ideal: " << b_ideal << "diff: " << diff << endl;
 							moved++;
 							// move each atom half the required distance
-							pep.chains[c].residues[r].atoms[a2].xyz[0] = 0.5*((deltaB/b)*(a2x-a1x)) + a2x;
-							pep.chains[c].residues[r].atoms[a2].xyz[1] = 0.5*((deltaB/b)*(a2y-a1y)) + a2y;
-							pep.chains[c].residues[r].atoms[a2].xyz[2] = 0.5*((deltaB/b)*(a2z-a1z)) + a2z;
-							pep.chains[c].residues[r].atoms[a1].xyz[0] = 0.5*(-(deltaB/b)*(a2x-a1x)) + a1x;
-							pep.chains[c].residues[r].atoms[a1].xyz[1] = 0.5*(-(deltaB/b)*(a2y-a1y)) + a1y;
-							pep.chains[c].residues[r].atoms[a1].xyz[2] = 0.5*(-(deltaB/b)*(a2z-a1z)) + a1z;
+							pep.chains[c].residues[r].atoms[a2].xyz[0] = 0.5*((deltaB/b)*(a1x-a2x)) + a2x;
+							pep.chains[c].residues[r].atoms[a2].xyz[1] = 0.5*((deltaB/b)*(a1y-a2y)) + a2y;
+							pep.chains[c].residues[r].atoms[a2].xyz[2] = 0.5*((deltaB/b)*(a1z-a2z)) + a2z;
+							pep.chains[c].residues[r].atoms[a1].xyz[0] = 0.5*((deltaB/b)*(a2x-a1x)) + a1x;
+							pep.chains[c].residues[r].atoms[a1].xyz[1] = 0.5*((deltaB/b)*(a2y-a1y)) + a1y;
+							pep.chains[c].residues[r].atoms[a1].xyz[2] = 0.5*((deltaB/b)*(a2z-a1z)) + a1z;
 						}
 							//if (b == 0){ // if atoms exactly overlapping
 								// generate random direction

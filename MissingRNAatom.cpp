@@ -36,32 +36,17 @@ int main(int argc,char **argv)
     ModelUnit pdb_entry=read_pdb_structure(argv[1],atomic_detail,allowX);
     map<string, map<string,vector<float> > >ideal_rna=parse_ideal_rna();
     MissingRNAatom(pdb_entry,ideal_rna,option);
-
-    map<string, map<string,vector<float> > >().swap(ideal_rna);
-    /*for (int r=0;r<pdb_entry.chains[0].residues.size();r++)
-    {
-        for (int a=0;a<pdb_entry.chains[0].residues[r].atoms.size();a++)
-        {
-            cout<<"r="<<r<<" a="<<a<<" movable="<<pdb_entry.chains[0].residues[r].atoms[a].movable<<endl;
-        }
-    }*/   
+    map<string, map<string,vector<float> > >().swap(ideal_rna); 
     standardize_pdb_order(pdb_entry);
-    //for (int r=0;r<pdb_entry.chains[0].residues.size();r++)
-    //{
-    //    for (int a=0;a<pdb_entry.chains[0].residues[r].atoms.size();a++)
-     //   {
-     //       cout<<"r="<<r<<" a="<<a<<" movable="<<pdb_entry.chains[0].residues[r].atoms[a].movable<<endl;
-    //    }
-    //}
+
     for (int t=0; t<100; t++){
     	int moved = fix_bond_lengths(pdb_entry, tolerance);
     	// if no atoms are moved, immediately break out of this for loop
-    	//cout << "moved= " << moved << endl;
     	if (moved==0){
-    		//cout << "broke out at t= " << t << endl;
     		break;
     	}
     }
+    
     write_pdb_structure(outfile.c_str(),pdb_entry);
     vector<ChainUnit>().swap(pdb_entry.chains);
     return 0;

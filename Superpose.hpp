@@ -1,3 +1,5 @@
+#ifndef Superpose_HPP
+#define Superpose_HPP 1
 /*********************************************************
 Compute the best rotation matrix and translation vector that optimize 
 overlap between two sets of coordinates 
@@ -376,3 +378,4 @@ void RotateCoor(const vector<vector<float> > &target_stru,const vector<vector<fl
 	
 }
 
+#endif

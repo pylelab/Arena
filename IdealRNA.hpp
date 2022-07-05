@@ -9,6 +9,16 @@ map<string, map<string,vector<float> > >parse_ideal_rna()
 {
     vector<float> tmp(3,0);
     map<string, map<string,vector<float> > >ideal_rna;
+
+    map<string,vector<float> >P;
+    P[" O3'"]=tmp; P[" O3'"][0]=   7.397; P[" O3'"][1]=   5.908; P[" O3'"][2]=  -5.390;
+    P[" P  "]=tmp; P[" P  "][0]=   6.913; P[" P  "][1]=   5.099; P[" P  "][2]=  -6.683;
+    P[" OP1"]=tmp; P[" OP1"][0]=   7.496; P[" OP1"][1]=   5.711; P[" OP1"][2]=  -7.898;
+    P[" OP2"]=tmp; P[" OP2"][0]=   5.439; P[" OP2"][1]=   4.971; P[" OP2"][2]=  -6.666;
+    P[" O5'"]=tmp; P[" O5'"][0]=   7.579; P[" O5'"][1]=   3.667; P[" O5'"][2]=  -6.429;
+    ideal_rna["P"]=P;
+    map<string,vector<float> >().swap(P);
+
     map<string,vector<float> >A;
     A[" P  "]=tmp; A[" P  "][0]=   3.063; A[" P  "][1]=   8.025; A[" P  "][2]=  -4.135;
     A[" OP1"]=tmp; A[" OP1"][0]=   3.223; A[" OP1"][1]=   8.856; A[" OP1"][2]=  -5.350;
@@ -231,7 +241,7 @@ map<string, map<string,vector<float> > >parse_ideal_rna()
         iter != ideal_rna.end(); iter++)
     {
         string key =  iter->first;
-        if (key.size()==3) continue;
+        if (key.size()<=3) continue;
         int idx=(char)(key[key.size()-1])-'0';
         bool reverse=false;
         if (key.size()==7 && idx>=2)

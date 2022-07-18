@@ -18,6 +18,8 @@ The order of each array along both rows and columns is the standard PDB order, w
 #include <iomanip>
 #include <map>
 
+#include "GeometryTools.hpp"
+
 using namespace std;
 
 // A
@@ -128,6 +130,15 @@ float U_bonds[20][20] = {
 // Bond between O3' and P of the next residue
 float OSP = 1.610;
 
+/* check is residue r and residue r+1 is connected */
+bool isConnected(const ModelUnit &pep, const int c, const int r)
+{
+    for (int a=0;a<=12;a++) if (Points2Distance(
+        pep.chains[c].residues[r].atoms[0].xyz,
+        pep.chains[c].residues[r+1].atoms[0].xyz)<=8) return true;
+    return false;
+}
+
 int fix_bond_lengths (ModelUnit &pep, float tolerance){
 	
 	// Initialize variables
@@ -159,7 +170,7 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 			a1x = pep.chains[c].residues[r].atoms[8].xyz[0];
 			a1y = pep.chains[c].residues[r].atoms[8].xyz[1];
 			a1z = pep.chains[c].residues[r].atoms[8].xyz[2];
-			if (r != (pep.chains[c].residues.size()-1)){
+			if (r != (pep.chains[c].residues.size()-1) && isConnected(pep,c,r)){
 				//cout << resname << resnumber << pep.chains[c].residues[r].atoms[8].name << pep.chains[c].residues[r+1].atoms[0].name << endl;
 				a2x = pep.chains[c].residues[r+1].atoms[0].xyz[0];
 				a2y = pep.chains[c].residues[r+1].atoms[0].xyz[1];

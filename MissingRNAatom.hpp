@@ -434,6 +434,14 @@ bool fillMissingRNAatomInStack(const size_t c1, const size_t r1,
     vector<vector<float> > RotMatix;  // U
     vector<float> TranVect;  // t
     string key, key1, key2;
+    
+    cout<<"reconstructing residue pair "
+        <<pdb_entry.chains[c1].residues[r1].resn
+        <<pdb_entry.chains[c1].residues[r1].resi
+        <<pdb_entry.chains[c1].residues[r1].icode<<" and "
+        <<pdb_entry.chains[c2].residues[r2].resn
+        <<pdb_entry.chains[c2].residues[r2].resi
+        <<pdb_entry.chains[c2].residues[r2].icode<<endl;
 
     size_t a,a1,a2;
     size_t atomNum=0;
@@ -481,7 +489,7 @@ bool fillMissingRNAatomInStack(const size_t c1, const size_t r1,
         key1=key+"0";
         key2=key+"3";
     }
-    cout<<"key1="<<key1<<". key2="<<key2<<"."<<endl;
+    //cout<<"key1="<<key1<<". key2="<<key2<<"."<<endl;
     for (a1=0;a1<pdb_entry.chains[c1].residues[r1].atoms.size();a1++)
     {
         if (pdb_entry.chains[c1].residues[r1].atoms[a1].movable) continue;
@@ -511,7 +519,7 @@ bool fillMissingRNAatomInStack(const size_t c1, const size_t r1,
         key1=key+"0";
         key2=key+"3";
         if (stack_next) key2=key+"5";
-        cout<<"key1="<<key1<<". key2="<<key2<<"."<<endl;
+        //cout<<"key1="<<key1<<". key2="<<key2<<"."<<endl;
         for (a1=0;a1<pdb_entry.chains[c1].residues[r1-1].atoms.size();a1++)
         {
             if (pdb_entry.chains[c1].residues[r1-1].atoms[a1].movable) continue;
@@ -546,7 +554,7 @@ bool fillMissingRNAatomInStack(const size_t c1, const size_t r1,
             key1=key+"2";
             key2=key+"3";
         }
-        cout<<"key1="<<key1<<". key2="<<key2<<"."<<endl;
+        //cout<<"key1="<<key1<<". key2="<<key2<<"."<<endl;
         for (a1=0;a1<pdb_entry.chains[c1].residues[r1+1].atoms.size();a1++)
         {
             if (pdb_entry.chains[c1].residues[r1+1].atoms[a1].movable) continue;
@@ -687,9 +695,9 @@ bool checkAtomInStack(const vector<pair<float, vector<size_t> > >&bp_vec,
         if (bp_vec[bp].second[4]) continue; // Watson-Crick pair only
         if (c1!=bp_vec[bp].second[0]   || c2!=bp_vec[bp].second[2]) continue;
         if (r1==bp_vec[bp].second[1]-1 && r2==bp_vec[bp].second[3]+1)
-            stack_prev=true;
-        if (r1==bp_vec[bp].second[1]+1 && r2==bp_vec[bp].second[3]-1)
             stack_next=true;
+        if (r1==bp_vec[bp].second[1]+1 && r2==bp_vec[bp].second[3]-1)
+            stack_prev=true;
     }
     return (stack_prev || stack_next);
 }

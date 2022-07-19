@@ -18,6 +18,7 @@ const char* docstring=""
 #include <iomanip>
 #include "MissingRNAatom.hpp"
 #include "BondLengths.hpp"
+#include "BaseConformation.hpp"
 #include "cssr.hpp"
 
 int main(int argc,char **argv)
@@ -46,18 +47,33 @@ int main(int argc,char **argv)
    
     map<string, map<string,vector<float> > >ideal_rna=parse_ideal_rna();
     MissingRNAatom(pdb_entry,ideal_rna,bp_vec,option);
-    map<string, map<string,vector<float> > >().swap(ideal_rna);
 
     if (option>=5)
     {
         standardize_pdb_order(pdb_entry);
         for (int t=0; t<100; t++){
     	    int moved = fix_bond_lengths(pdb_entry, tolerance);
-    	    // if no atoms are moved, immediately break out of this for loop
+            
+            if (t%10==0)
+            {
+                size_t bp;
+                for (bp=0;bp<res_str_vec.size();bp++) res_str_vec[bp].clear();
+                res_str_vec.clear();
+                for (bp=0;bp<bp_vec.size();bp++) bp_vec[bp].second.clear();
+                bp_vec.clear();
+
+                cssr(pdb_entry, res_str_vec, bp_vec);
+                filter_bp(bp_vec);
+            }
+            moved+=fixBaseConformation(pdb_entry, ideal_rna, bp_vec);
+ 
+            // if no atoms are moved, immediately break out of this for loop
     	    if (moved==0) break;
+            cout<<"t="<<t<<" moved="<<moved<<endl;
     	}
     }
     
+    map<string, map<string,vector<float> > >().swap(ideal_rna);
     write_pdb_structure(outfile.c_str(),pdb_entry);
     vector<ChainUnit>().swap(pdb_entry.chains);
     vector<vector<size_t> >().swap(res_str_vec);

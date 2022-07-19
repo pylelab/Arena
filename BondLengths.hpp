@@ -129,7 +129,7 @@ float U_bonds[20][20] = {
 
 // OSP
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3'
-float OSP_bonds[9][9] = {
+float OSP_bonds[9][4] = {
 	{0, 0, 0, 0},
 	{0, 0, 0, 0},
 	{0, 0, 0, 0},

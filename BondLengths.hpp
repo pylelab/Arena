@@ -148,8 +148,8 @@ float OSP = 1.610;
 bool isConnected(const ModelUnit &pep, const int c, const int r)
 {
     for (int a=0;a<=12;a++) if (Points2Distance(
-        pep.chains[c].residues[r].atoms[0].xyz,
-        pep.chains[c].residues[r+1].atoms[0].xyz)<=8) return true;
+        pep.chains[c].residues[r].atoms[a].xyz,
+        pep.chains[c].residues[r+1].atoms[a].xyz)<=8) return true;
     return false;
 }
 

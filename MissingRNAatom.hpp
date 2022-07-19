@@ -380,7 +380,10 @@ bool fillMissingRNAatomInPair(const size_t c1, const size_t r1,
         cerr<<"duplicated coordinate when reconstructing "
             <<pdb_entry.chains[c1].residues[r1].resn
             <<pdb_entry.chains[c1].residues[r1].resi
-            <<pdb_entry.chains[c1].residues[r1].icode<<endl;
+            <<pdb_entry.chains[c1].residues[r1].icode<<" and "
+            <<pdb_entry.chains[c2].residues[r2].resn
+            <<pdb_entry.chains[c2].residues[r2].resi
+            <<pdb_entry.chains[c2].residues[r2].icode<<endl;
 
     if (atomNum<3)
     {
@@ -391,9 +394,6 @@ bool fillMissingRNAatomInPair(const size_t c1, const size_t r1,
         }
         xyz_list1.clear();
         xyz_list2.clear();
-        TranVect.clear();
-        for (a=0;a<3;a++) RotMatix[a].clear();
-        RotMatix.clear();
         key1.clear();
         key2.clear();
         return false;
@@ -601,7 +601,10 @@ bool fillMissingRNAatomInStack(const size_t c1, const size_t r1,
         cerr<<"duplicated coordinate when reconstructing "
             <<pdb_entry.chains[c1].residues[r1].resn
             <<pdb_entry.chains[c1].residues[r1].resi
-            <<pdb_entry.chains[c1].residues[r1].icode<<endl;
+            <<pdb_entry.chains[c1].residues[r1].icode<<" and "
+            <<pdb_entry.chains[c2].residues[r2].resn
+            <<pdb_entry.chains[c2].residues[r2].resi
+            <<pdb_entry.chains[c2].residues[r2].icode<<endl;
 
     if (atomNum<3)
     {
@@ -612,9 +615,6 @@ bool fillMissingRNAatomInStack(const size_t c1, const size_t r1,
         }
         xyz_list1.clear();
         xyz_list2.clear();
-        TranVect.clear();
-        for (a=0;a<3;a++) RotMatix[a].clear();
-        RotMatix.clear();
         key.clear();
         key1.clear();
         key2.clear();

@@ -196,7 +196,7 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 					    // Calculate fractional difference between the current and ideal bond lengths
 					    diff = abs(b - b_ideal) / b_ideal;
 					    // Check if difference is greater than or equal to the allowed tolerance
-					    if (diff >= tolerance){
+					    if (diff >= tolerance && b>0.0001){
 						    //cout << resname << resnumber << atom1 << atom2 << b << ' ' << b_ideal << ' ' << diff <<endl;
 						    deltaB = b - b_ideal; // difference in bond length from ideal
 						    // Check which atoms are movable and assign new coordinates to the movable atom
@@ -289,7 +289,7 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 					// Calculate fractional difference between the current and ideal bond lengths
 					diff = abs(b - b_ideal) / b_ideal;
 					// Check if difference is greater than or equal to the allowed tolerance
-					if (diff >= tolerance){
+					if (diff >= tolerance && b>0.0001){
 						//cout << resname << resnumber << atom1 << atom2 << b << ' ' << b_ideal << ' ' << diff <<endl;
 						deltaB = b - b_ideal; // difference in bond length from ideal
 						// Check which atoms are movable and assign new coordinates to the movable atom

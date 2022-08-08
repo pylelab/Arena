@@ -326,8 +326,385 @@ void fillMissingRNAatom(size_t r, ChainUnit &chain, ChainUnit &fill_chain,
     return;
 }
 
-bool MissingRNAatom(ChainUnit &chain, 
+bool fillMissingRNAatomInPair(const size_t c1, const size_t r1, 
+    const size_t c2, const size_t r2,
+    const ModelUnit &pdb_entry, ChainUnit &fill_chain,
     map<string, map<string,vector<float> > >&ideal_rna,
+    vector<string>missing_atom_vec)
+{
+    vector<float> tmp(3,0);
+    vector<vector<float> > xyz_list1;
+    vector<vector<float> > xyz_list2;
+    vector<vector<float> > RotMatix;  // U
+    vector<float> TranVect;  // t
+    string key1=pdb_entry.chains[c1].residues[r1].resn;
+    string key2=pdb_entry.chains[c2].residues[r2].resn;
+
+    size_t a,a1,a2;
+    size_t atomNum=0;
+    for (a1=0;a1<pdb_entry.chains[c1].residues[r1].atoms.size();a1++)
+        atomNum+=pdb_entry.chains[c1].residues[r1].atoms[a1].movable==0;
+    for (a2=0;a2<pdb_entry.chains[c2].residues[r2].atoms.size();a2++)
+        atomNum+=pdb_entry.chains[c2].residues[r2].atoms[a2].movable==0;
+    xyz_list1.assign(atomNum,tmp);
+    xyz_list2.assign(atomNum,tmp);
+
+    a=0;
+    for (a1=0;a1<pdb_entry.chains[c1].residues[r1].atoms.size();a1++)
+    {
+        if (pdb_entry.chains[c1].residues[r1].atoms[a1].movable) continue;
+        xyz_list1[a][0]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1].atoms[a1].name][0];
+        xyz_list1[a][1]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1].atoms[a1].name][1];
+        xyz_list1[a][2]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1].atoms[a1].name][2];
+
+        xyz_list2[a][0]=pdb_entry.chains[c1].residues[r1].atoms[a1].xyz[0];
+        xyz_list2[a][1]=pdb_entry.chains[c1].residues[r1].atoms[a1].xyz[1];
+        xyz_list2[a][2]=pdb_entry.chains[c1].residues[r1].atoms[a1].xyz[2];
+        a++;
+    }
+    for (a2=0;a2<pdb_entry.chains[c2].residues[r2].atoms.size();a2++)
+    {
+        if (pdb_entry.chains[c2].residues[r2].atoms[a2].movable) continue;
+        xyz_list1[a][0]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2].atoms[a2].name][0];
+        xyz_list1[a][1]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2].atoms[a2].name][1];
+        xyz_list1[a][2]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2].atoms[a2].name][2];
+
+        xyz_list2[a][0]=pdb_entry.chains[c2].residues[r2].atoms[a2].xyz[0];
+        xyz_list2[a][1]=pdb_entry.chains[c2].residues[r2].atoms[a2].xyz[1];
+        xyz_list2[a][2]=pdb_entry.chains[c2].residues[r2].atoms[a2].xyz[2];
+        a++;
+    }
+
+    atomNum=countUniqAtom(xyz_list2);
+    if (atomNum<xyz_list2.size())
+        cerr<<"duplicated coordinate when reconstructing "
+            <<pdb_entry.chains[c1].residues[r1].resn
+            <<pdb_entry.chains[c1].residues[r1].resi
+            <<pdb_entry.chains[c1].residues[r1].icode<<" and "
+            <<pdb_entry.chains[c2].residues[r2].resn
+            <<pdb_entry.chains[c2].residues[r2].resi
+            <<pdb_entry.chains[c2].residues[r2].icode<<endl;
+
+    if (atomNum<3)
+    {
+        for (a=0;a<xyz_list1.size();a++)
+        {
+            xyz_list1[a].clear();
+            xyz_list2[a].clear();
+        }
+        xyz_list1.clear();
+        xyz_list2.clear();
+        key1.clear();
+        key2.clear();
+        return false;
+    }
+    
+    RotateCoor(xyz_list1,xyz_list2, RotMatix, TranVect);
+    
+    /* eventually assign the coordinate */
+    for (a=0;a<missing_atom_vec.size();a++)
+        ChangeCoor(ideal_rna[key1][missing_atom_vec[a]],
+            RotMatix, TranVect, fill_chain.residues[r1].atoms[a].xyz);
+    
+    /* clean up */
+    for (a=0;a<xyz_list1.size();a++)
+    {
+        xyz_list1[a].clear();
+        xyz_list2[a].clear();
+    }
+    xyz_list1.clear();
+    xyz_list2.clear();
+    TranVect.clear();
+    for (a=0;a<3;a++) RotMatix[a].clear();
+    RotMatix.clear();
+    key1.clear();
+    key2.clear();
+    return true;
+}
+
+bool fillMissingRNAatomInStack(const size_t c1, const size_t r1,
+    const size_t c2, const size_t r2, const bool stack_prev,
+    const bool stack_next, const ModelUnit &pdb_entry, ChainUnit &fill_chain,
+    map<string, map<string,vector<float> > >&ideal_rna,
+    vector<string>missing_atom_vec)
+{
+    vector<float> tmp(3,0);
+    vector<vector<float> > xyz_list1;
+    vector<vector<float> > xyz_list2;
+    vector<vector<float> > RotMatix;  // U
+    vector<float> TranVect;  // t
+    string key, key1, key2;
+    
+    cout<<"reconstructing residue pair "
+        <<pdb_entry.chains[c1].residues[r1].resn
+        <<pdb_entry.chains[c1].residues[r1].resi
+        <<pdb_entry.chains[c1].residues[r1].icode<<" and "
+        <<pdb_entry.chains[c2].residues[r2].resn
+        <<pdb_entry.chains[c2].residues[r2].resi
+        <<pdb_entry.chains[c2].residues[r2].icode<<endl;
+
+    size_t a,a1,a2;
+    size_t atomNum=0;
+    for (a=0;a<pdb_entry.chains[c1].residues[r1].atoms.size();a++)
+        atomNum+=pdb_entry.chains[c1].residues[r1].atoms[a].movable==0;
+    for (a=0;a<pdb_entry.chains[c2].residues[r2].atoms.size();a++)
+        atomNum+=pdb_entry.chains[c2].residues[r2].atoms[a].movable==0;
+    if (stack_prev)
+    {
+        for (a=0;a<pdb_entry.chains[c1].residues[r1-1].atoms.size();a++)
+            atomNum+=pdb_entry.chains[c1].residues[r1-1].atoms[a].movable==0;
+        for (a=0;a<pdb_entry.chains[c2].residues[r2+1].atoms.size();a++)
+            atomNum+=pdb_entry.chains[c2].residues[r2+1].atoms[a].movable==0;
+    }
+    if (stack_next)
+    {
+        for (a=0;a<pdb_entry.chains[c1].residues[r1+1].atoms.size();a++)
+            atomNum+=pdb_entry.chains[c1].residues[r1+1].atoms[a].movable==0;
+        for (a=0;a<pdb_entry.chains[c2].residues[r2-1].atoms.size();a++)
+            atomNum+=pdb_entry.chains[c2].residues[r2-1].atoms[a].movable==0;
+    }
+    xyz_list1.assign(atomNum,tmp);
+    xyz_list2.assign(atomNum,tmp);
+
+    a=0;
+    if (stack_prev && stack_next)
+    {
+        key=pdb_entry.chains[c1].residues[r1-1].resn+
+            pdb_entry.chains[c1].residues[r1  ].resn+
+            pdb_entry.chains[c1].residues[r1+1].resn;
+        key1=key+"1";
+        key2=key+"4";
+    }
+    else if (stack_prev)
+    {
+        key=pdb_entry.chains[c1].residues[r1-1].resn+
+            pdb_entry.chains[c1].residues[r1  ].resn;
+        key1=key+"1";
+        key2=key+"2";
+    }
+    else if (stack_next)
+    {
+        key=pdb_entry.chains[c1].residues[r1  ].resn+
+            pdb_entry.chains[c1].residues[r1+1].resn;
+        key1=key+"0";
+        key2=key+"3";
+    }
+    //cout<<"key1="<<key1<<". key2="<<key2<<"."<<endl;
+    for (a1=0;a1<pdb_entry.chains[c1].residues[r1].atoms.size();a1++)
+    {
+        if (pdb_entry.chains[c1].residues[r1].atoms[a1].movable) continue;
+        xyz_list1[a][0]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1].atoms[a1].name][0];
+        xyz_list1[a][1]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1].atoms[a1].name][1];
+        xyz_list1[a][2]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1].atoms[a1].name][2];
+
+        xyz_list2[a][0]=pdb_entry.chains[c1].residues[r1].atoms[a1].xyz[0];
+        xyz_list2[a][1]=pdb_entry.chains[c1].residues[r1].atoms[a1].xyz[1];
+        xyz_list2[a][2]=pdb_entry.chains[c1].residues[r1].atoms[a1].xyz[2];
+        a++;
+    }
+    for (a2=0;a2<pdb_entry.chains[c2].residues[r2].atoms.size();a2++)
+    {
+        if (pdb_entry.chains[c2].residues[r2].atoms[a2].movable) continue;
+        xyz_list1[a][0]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2].atoms[a2].name][0];
+        xyz_list1[a][1]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2].atoms[a2].name][1];
+        xyz_list1[a][2]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2].atoms[a2].name][2];
+
+        xyz_list2[a][0]=pdb_entry.chains[c2].residues[r2].atoms[a2].xyz[0];
+        xyz_list2[a][1]=pdb_entry.chains[c2].residues[r2].atoms[a2].xyz[1];
+        xyz_list2[a][2]=pdb_entry.chains[c2].residues[r2].atoms[a2].xyz[2];
+        a++;
+    }
+    if (stack_prev)
+    {
+        key1=key+"0";
+        key2=key+"3";
+        if (stack_next) key2=key+"5";
+        //cout<<"key1="<<key1<<". key2="<<key2<<"."<<endl;
+        for (a1=0;a1<pdb_entry.chains[c1].residues[r1-1].atoms.size();a1++)
+        {
+            if (pdb_entry.chains[c1].residues[r1-1].atoms[a1].movable) continue;
+            xyz_list1[a][0]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1-1].atoms[a1].name][0];
+            xyz_list1[a][1]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1-1].atoms[a1].name][1];
+            xyz_list1[a][2]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1-1].atoms[a1].name][2];
+
+            xyz_list2[a][0]=pdb_entry.chains[c1].residues[r1-1].atoms[a1].xyz[0];
+            xyz_list2[a][1]=pdb_entry.chains[c1].residues[r1-1].atoms[a1].xyz[1];
+            xyz_list2[a][2]=pdb_entry.chains[c1].residues[r1-1].atoms[a1].xyz[2];
+            a++;
+        }
+        for (a2=0;a2<pdb_entry.chains[c2].residues[r2+1].atoms.size();a2++)
+        {
+            if (pdb_entry.chains[c2].residues[r2+1].atoms[a2].movable) continue;
+            xyz_list1[a][0]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2+1].atoms[a2].name][0];
+            xyz_list1[a][1]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2+1].atoms[a2].name][1];
+            xyz_list1[a][2]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2+1].atoms[a2].name][2];
+
+            xyz_list2[a][0]=pdb_entry.chains[c2].residues[r2+1].atoms[a2].xyz[0];
+            xyz_list2[a][1]=pdb_entry.chains[c2].residues[r2+1].atoms[a2].xyz[1];
+            xyz_list2[a][2]=pdb_entry.chains[c2].residues[r2+1].atoms[a2].xyz[2];
+            a++;
+        }
+    }
+    if (stack_next)
+    {
+        key1=key+"1";
+        key2=key+"2";
+        if (stack_prev)
+        {
+            key1=key+"2";
+            key2=key+"3";
+        }
+        //cout<<"key1="<<key1<<". key2="<<key2<<"."<<endl;
+        for (a1=0;a1<pdb_entry.chains[c1].residues[r1+1].atoms.size();a1++)
+        {
+            if (pdb_entry.chains[c1].residues[r1+1].atoms[a1].movable) continue;
+            xyz_list1[a][0]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1+1].atoms[a1].name][0];
+            xyz_list1[a][1]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1+1].atoms[a1].name][1];
+            xyz_list1[a][2]=ideal_rna[key1][pdb_entry.chains[c1].residues[r1+1].atoms[a1].name][2];
+
+            xyz_list2[a][0]=pdb_entry.chains[c1].residues[r1+1].atoms[a1].xyz[0];
+            xyz_list2[a][1]=pdb_entry.chains[c1].residues[r1+1].atoms[a1].xyz[1];
+            xyz_list2[a][2]=pdb_entry.chains[c1].residues[r1+1].atoms[a1].xyz[2];
+            a++;
+        }
+        for (a2=0;a2<pdb_entry.chains[c2].residues[r2-1].atoms.size();a2++)
+        {
+            if (pdb_entry.chains[c2].residues[r2-1].atoms[a2].movable) continue;
+            xyz_list1[a][0]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2-1].atoms[a2].name][0];
+            xyz_list1[a][1]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2-1].atoms[a2].name][1];
+            xyz_list1[a][2]=ideal_rna[key2][pdb_entry.chains[c2].residues[r2-1].atoms[a2].name][2];
+
+            xyz_list2[a][0]=pdb_entry.chains[c2].residues[r2-1].atoms[a2].xyz[0];
+            xyz_list2[a][1]=pdb_entry.chains[c2].residues[r2-1].atoms[a2].xyz[1];
+            xyz_list2[a][2]=pdb_entry.chains[c2].residues[r2-1].atoms[a2].xyz[2];
+            a++;
+        }
+    }
+    if (stack_prev && stack_next)
+    {
+        key1=key+"1";
+        key2=key+"4";
+    }
+    else if (stack_prev)
+    {
+        key1=key+"1";
+        key2=key+"2";
+    }
+    else if (stack_next)
+    {
+        key1=key+"0";
+        key2=key+"3";
+    }
+
+    atomNum=countUniqAtom(xyz_list2);
+    if (atomNum<xyz_list2.size())
+        cerr<<"duplicated coordinate when reconstructing "
+            <<pdb_entry.chains[c1].residues[r1].resn
+            <<pdb_entry.chains[c1].residues[r1].resi
+            <<pdb_entry.chains[c1].residues[r1].icode<<" and "
+            <<pdb_entry.chains[c2].residues[r2].resn
+            <<pdb_entry.chains[c2].residues[r2].resi
+            <<pdb_entry.chains[c2].residues[r2].icode<<endl;
+
+    if (atomNum<3)
+    {
+        for (a=0;a<xyz_list1.size();a++)
+        {
+            xyz_list1[a].clear();
+            xyz_list2[a].clear();
+        }
+        xyz_list1.clear();
+        xyz_list2.clear();
+        key.clear();
+        key1.clear();
+        key2.clear();
+        return false;
+    }
+    
+    RotateCoor(xyz_list1,xyz_list2, RotMatix, TranVect);
+    
+    /* adjust TranVect */
+    atomNum=0;
+    for (a=0;a<pdb_entry.chains[c1].residues[r1].atoms.size();a++)
+    {
+        if (pdb_entry.chains[c1].residues[r1].atoms[a].movable) continue;
+        ChangeCoor(ideal_rna[key1][pdb_entry.chains[c1].residues[r1].atoms[a].name],
+            RotMatix,TranVect,xyz_list1[atomNum]);
+        tmp[0]+=(pdb_entry.chains[c1].residues[r1].atoms[a].xyz[0]-xyz_list1[atomNum][0]);
+        tmp[1]+=(pdb_entry.chains[c1].residues[r1].atoms[a].xyz[1]-xyz_list1[atomNum][1]);
+        tmp[2]+=(pdb_entry.chains[c1].residues[r1].atoms[a].xyz[2]-xyz_list1[atomNum][2]);
+        atomNum++;
+    }
+    for (a=0;a<pdb_entry.chains[c2].residues[r2].atoms.size();a++)
+    {
+        if (pdb_entry.chains[c2].residues[r1].atoms[a].movable) continue;
+        ChangeCoor(ideal_rna[key2][pdb_entry.chains[c2].residues[r2].atoms[a].name],
+            RotMatix,TranVect,xyz_list1[atomNum]);
+        tmp[0]+=(pdb_entry.chains[c2].residues[r2].atoms[a].xyz[0]-xyz_list1[atomNum][0]);
+        tmp[1]+=(pdb_entry.chains[c2].residues[r2].atoms[a].xyz[1]-xyz_list1[atomNum][1]);
+        tmp[2]+=(pdb_entry.chains[c2].residues[r2].atoms[a].xyz[2]-xyz_list1[atomNum][2]);
+        atomNum++;
+    }
+    TranVect[0]+=tmp[0]/atomNum;
+    TranVect[1]+=tmp[1]/atomNum;
+    TranVect[2]+=tmp[2]/atomNum;
+    
+    /* eventually assign the coordinate */
+    for (a=0;a<missing_atom_vec.size();a++)
+        ChangeCoor(ideal_rna[key1][missing_atom_vec[a]],
+            RotMatix, TranVect, fill_chain.residues[r1].atoms[a].xyz);
+    
+    /* clean up */
+    for (a=0;a<xyz_list1.size();a++)
+    {
+        xyz_list1[a].clear();
+        xyz_list2[a].clear();
+    }
+    xyz_list1.clear();
+    xyz_list2.clear();
+    TranVect.clear();
+    for (a=0;a<3;a++) RotMatix[a].clear();
+    RotMatix.clear();
+    key.clear();
+    key1.clear();
+    key2.clear();
+    return true;
+}
+
+bool check3atomInPair(ModelUnit &pdb_entry, const size_t c2,const size_t r2,
+    const size_t c1, const size_t r1)
+{
+    size_t atomNum=0;
+    size_t a=0;
+    for (a=0;a<pdb_entry.chains[c1].residues[r1].atoms.size();a++)
+        atomNum+=(pdb_entry.chains[c1].residues[r1].atoms[a].movable==0);
+    for (a=0;a<pdb_entry.chains[c2].residues[r2].atoms.size();a++)
+        atomNum+=(pdb_entry.chains[c2].residues[r2].atoms[a].movable==0);
+    return atomNum>=3;
+}
+
+bool checkAtomInStack(const vector<pair<float, vector<size_t> > >&bp_vec,
+    const size_t c1, const size_t r1, const size_t c2, const size_t r2,
+    bool &stack_prev, bool &stack_next)
+{
+    size_t bp;
+    stack_prev=false;
+    stack_next=false;
+    for (bp=0;bp<bp_vec.size();bp++)
+    {
+        if (bp_vec[bp].second[4]) continue; // Watson-Crick pair only
+        if (c1!=bp_vec[bp].second[0]   || c2!=bp_vec[bp].second[2]) continue;
+        if (r1==bp_vec[bp].second[1]-1 && r2==bp_vec[bp].second[3]+1)
+            stack_next=true;
+        if (r1==bp_vec[bp].second[1]+1 && r2==bp_vec[bp].second[3]-1)
+            stack_prev=true;
+    }
+    return (stack_prev || stack_next);
+}
+
+bool MissingRNAatom(ModelUnit &pdb_entry, const size_t c,
+    map<string, map<string,vector<float> > >&ideal_rna,
+    const vector<pair<float,vector<size_t> > >&bp_vec,
     const int option=0)
 {
     vector<string> missing_atom_vec;
@@ -335,70 +712,70 @@ bool MissingRNAatom(ChainUnit &chain,
     size_t r,i,j;
     vector<size_t> remove_residue_vec;
     map<size_t,vector<string> >fill_residue_map;
-    for (r=0;r<chain.residues.size();r++)
+    for (r=0;r<pdb_entry.chains[c].residues.size();r++)
     {
-        checkMissingRNAatom(chain.residues[r], ideal_rna,
+        checkMissingRNAatom(pdb_entry.chains[c].residues[r], ideal_rna,
             missing_atom_vec, nonstd_atom_vec, option);
         if (option==2 && missing_atom_vec.size())
         {
             cout<<"remove residue "
-                <<chain.residues[r].resn
-                <<chain.residues[r].resi
-                <<chain.residues[r].icode
+                <<pdb_entry.chains[c].residues[r].resn
+                <<pdb_entry.chains[c].residues[r].resi
+                <<pdb_entry.chains[c].residues[r].icode
                 <<" with "
                 <<missing_atom_vec.size()
                 <<" missing atoms"<<endl;
-            chain.residues[r].resn.clear();
+            pdb_entry.chains[c].residues[r].resn.clear();
             remove_residue_vec.push_back(r);
         }
         if (option>=3 && missing_atom_vec.size() && (
-            chain.residues[r].atoms.size()>=3
-            || (option==5 && chain.residues.size()<=2)))
+            pdb_entry.chains[c].residues[r].atoms.size()>=3
+            || (option==5 && pdb_entry.chains[c].residues.size()<=2)))
         {
             cout<<"fill residue "
-                <<chain.residues[r].resn
-                <<chain.residues[r].resi
-                <<chain.residues[r].icode
+                <<pdb_entry.chains[c].residues[r].resn
+                <<pdb_entry.chains[c].residues[r].resi
+                <<pdb_entry.chains[c].residues[r].icode
                 <<" with "
                 <<missing_atom_vec.size()
                 <<" missing atoms"<<endl;
-            fillMissingRNAatom(chain.residues[r], ideal_rna, missing_atom_vec);
+            fillMissingRNAatom(pdb_entry.chains[c].residues[r], ideal_rna, missing_atom_vec);
             missing_atom_vec.clear();
         }
-        else if (option==3 && chain.residues[r].atoms.size()<3)
+        else if (option==3 && pdb_entry.chains[c].residues[r].atoms.size()<3)
         {
             cout<<"failed to fill residue "
-                <<chain.residues[r].resn
-                <<chain.residues[r].resi
-                <<chain.residues[r].icode
+                <<pdb_entry.chains[c].residues[r].resn
+                <<pdb_entry.chains[c].residues[r].resi
+                <<pdb_entry.chains[c].residues[r].icode
                 <<" with "
-                <<chain.residues[r].atoms.size()
+                <<pdb_entry.chains[c].residues[r].atoms.size()
                 <<" atoms and "
                 <<missing_atom_vec.size()
                 <<" missing atoms"<<endl;
         }
-        else if (option==4 && chain.residues[r].atoms.size()<3)
+        else if (option==4 && pdb_entry.chains[c].residues[r].atoms.size()<3)
         {
             cout<<"remove residue "
-                <<chain.residues[r].resn
-                <<chain.residues[r].resi
-                <<chain.residues[r].icode
+                <<pdb_entry.chains[c].residues[r].resn
+                <<pdb_entry.chains[c].residues[r].resi
+                <<pdb_entry.chains[c].residues[r].icode
                 <<" with "
-                <<chain.residues[r].atoms.size()
+                <<pdb_entry.chains[c].residues[r].atoms.size()
                 <<" atoms"<<endl;
-            chain.residues[r].resn.clear();
+            pdb_entry.chains[c].residues[r].resn.clear();
             remove_residue_vec.push_back(r);
         }
         else if (option==5)
         {
-            if (chain.residues[r].atoms.size()==0)
+            if (pdb_entry.chains[c].residues[r].atoms.size()==0)
             {
                 cout<<"remove residue "
-                    <<chain.residues[r].resn
-                    <<chain.residues[r].resi
-                    <<chain.residues[r].icode
+                    <<pdb_entry.chains[c].residues[r].resn
+                    <<pdb_entry.chains[c].residues[r].resi
+                    <<pdb_entry.chains[c].residues[r].icode
                     <<" without standard atom"<<endl;
-                chain.residues[r].resn.clear();
+                pdb_entry.chains[c].residues[r].resn.clear();
                 remove_residue_vec.push_back(r);
             }
             else if (missing_atom_vec.size())
@@ -409,22 +786,22 @@ bool MissingRNAatom(ChainUnit &chain,
     /* remove empty residues */
     if (remove_residue_vec.size())
     {
-        for (i=0;i<chain.residues.size();i++)
+        for (i=0;i<pdb_entry.chains[c].residues.size();i++)
         {
-            if (chain.residues[i].resn.size()) continue;
-            for (j=i+1;j<chain.residues.size();j++)
+            if (pdb_entry.chains[c].residues[i].resn.size()) continue;
+            for (j=i+1;j<pdb_entry.chains[c].residues.size();j++)
             {
-                if (chain.residues[j].resn.size()==0) continue;
-                chain.residues[i].het  =chain.residues[j].het;
-                chain.residues[i].resi =chain.residues[j].resi;
-                chain.residues[i].icode=chain.residues[j].icode;
-                chain.residues[i].resn =chain.residues[j].resn;
-                chain.residues[i].atoms=chain.residues[j].atoms;
-                chain.residues[j].resn.clear();
+                if (pdb_entry.chains[c].residues[j].resn.size()==0) continue;
+                pdb_entry.chains[c].residues[i].het  =pdb_entry.chains[c].residues[j].het;
+                pdb_entry.chains[c].residues[i].resi =pdb_entry.chains[c].residues[j].resi;
+                pdb_entry.chains[c].residues[i].icode=pdb_entry.chains[c].residues[j].icode;
+                pdb_entry.chains[c].residues[i].resn =pdb_entry.chains[c].residues[j].resn;
+                pdb_entry.chains[c].residues[i].atoms=pdb_entry.chains[c].residues[j].atoms;
+                pdb_entry.chains[c].residues[j].resn.clear();
                 break;
             }
         }
-        for (i=0;i<remove_residue_vec.size();i++) chain.residues.pop_back();
+        for (i=0;i<remove_residue_vec.size();i++) pdb_entry.chains[c].residues.pop_back();
     }
 
     /* fill residues with 1 or 2 atoms for chains with >=3 residues */
@@ -436,7 +813,7 @@ bool MissingRNAatom(ChainUnit &chain,
         AtomUnit fill_atom;
         size_t a;
         
-        for (r=0;r<chain.residues.size();r++)
+        for (r=0;r<pdb_entry.chains[c].residues.size();r++)
         {
             fill_chain.residues.push_back(fill_residue);
             if (fill_residue_map.count(r)==0) continue;
@@ -449,23 +826,67 @@ bool MissingRNAatom(ChainUnit &chain,
             }
         }
 
+        /* reconstruct missing atoms in base pairs */
+        size_t bp;
+        size_t r1,r2,c1,c2;
+        for (bp=0;bp<bp_vec.size();bp++)
+        {
+            if (bp_vec[bp].second[4]) continue; // Watson-Crick pair only
+            c1= bp_vec[bp].second[0];
+            r1= bp_vec[bp].second[1];
+            c2= bp_vec[bp].second[2];
+            r2= bp_vec[bp].second[3];
+            if (c1==c && fill_residue_map.count(r1) && 
+                check3atomInPair(pdb_entry,c1,r1,c2,r2) &&
+                fillMissingRNAatomInPair(c1,r1,c2,r2, pdb_entry,
+                    fill_chain, ideal_rna, fill_residue_map[r1]))
+                    fill_residue_map[r1].clear();
+            if (c2==c && fill_residue_map.count(r2) &&
+                check3atomInPair(pdb_entry,c2,r2,c1,r1) &&
+                fillMissingRNAatomInPair(c2,r2,c1,r1, pdb_entry,
+                    fill_chain, ideal_rna, fill_residue_map[r2]))
+                    fill_residue_map[r2].clear();
+        }
+        
+        /* reconstruct missing atoms in base pair stack */
+        bool stack_prev,stack_next;
+        for (bp=0;bp<bp_vec.size();bp++)
+        {
+            if (bp_vec[bp].second[4]) continue; // Watson-Crick pair only
+            c1= bp_vec[bp].second[0];
+            r1= bp_vec[bp].second[1];
+            c2= bp_vec[bp].second[2];
+            r2= bp_vec[bp].second[3];
+            if (c1==c && fill_residue_map.count(r1) && 
+                checkAtomInStack(bp_vec,c1,r1,c2,r2, stack_prev, stack_next) &&
+                fillMissingRNAatomInStack(c1,r1,c2,r2, stack_prev, stack_next,
+                    pdb_entry, fill_chain, ideal_rna, fill_residue_map[r1]))
+                    fill_residue_map[r1].clear();
+            if (c2==c && fill_residue_map.count(r2) && 
+                checkAtomInStack(bp_vec,c2,r2,c1,r1, stack_prev, stack_next) &&
+                fillMissingRNAatomInStack(c2,r2,c1,r1, stack_prev, stack_next,
+                    pdb_entry, fill_chain, ideal_rna, fill_residue_map[r2]))
+                    fill_residue_map[r2].clear();
+        }
+        
+
         /* reconstruct missing atoms */
-        for (r=0;r<chain.residues.size();r++)
+        for (r=0;r<pdb_entry.chains[c].residues.size();r++)
         {
             if (fill_residue_map.count(r)==0) continue;
             cout<<"reconstructing residue "
-                <<chain.residues[r].resn
-                <<chain.residues[r].resi
-                <<chain.residues[r].icode
-                <<" from "<<chain.residues[r].atoms.size()<<" atoms"<<endl;
+                <<pdb_entry.chains[c].residues[r].resn
+                <<pdb_entry.chains[c].residues[r].resi
+                <<pdb_entry.chains[c].residues[r].icode
+                <<" from "<<pdb_entry.chains[c].residues[r].atoms.size()<<" atoms"<<endl;
             fillMissingRNAatom(
-                r, chain, fill_chain, ideal_rna, fill_residue_map[r]);
+                r, pdb_entry.chains[c], fill_chain, ideal_rna, fill_residue_map[r]);
         }
 
         /* append missing atoms to chain*/
-        for (r=0;r<chain.residues.size();r++){
+        for (r=0;r<pdb_entry.chains[c].residues.size();r++){
             for (a=0;a<fill_chain.residues[r].atoms.size();a++){
-                chain.residues[r].atoms.push_back(fill_chain.residues[r].atoms[a]);
+                pdb_entry.chains[c].residues[r].atoms.push_back(fill_chain.residues[r].atoms[a]);
         	}
         }
 
@@ -487,11 +908,12 @@ bool MissingRNAatom(ChainUnit &chain,
 
 bool MissingRNAatom(ModelUnit &pdb_entry, 
     map<string, map<string,vector<float> > >&ideal_rna,
+    const vector<pair<float,vector<size_t> > >&bp_vec,
     const int option=0)
 {
     size_t c;
     for (c=0;c<pdb_entry.chains.size();c++)
-        MissingRNAatom(pdb_entry.chains[c], ideal_rna, option);
+        MissingRNAatom(pdb_entry, c, ideal_rna, bp_vec, option);
     return true;
 }
 

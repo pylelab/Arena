@@ -79,6 +79,11 @@ int parse_pdb_line(const string line,ModelUnit &pep, ChainUnit &chain,
     if ((atomic_detail==0 && atom.name!=" CA " && atom.name!=" C3'")||
         (atomic_detail==1 && atom.name!=" CA " && atom.name!=" C3'" &&
          atom.name!=" N  "&& atom.name!=" C  " && atom.name!=" O  ")) return 0;
+
+    // fix legacy atom name
+    if      (atom.name==" O1P") atom.name=" OP1";
+    else if (atom.name==" O2P") atom.name=" OP2";
+    else if (atom.name[3]=='*') atom.name=atom.name.substr(0,3)+"'";
     
     if (residue.resn=="MSE" && allowX<3)
     {

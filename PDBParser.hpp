@@ -90,6 +90,16 @@ int parse_pdb_line(const string line,ModelUnit &pep, ChainUnit &chain,
         record_name="ATOM  ";
         residue.resn="MET";
     }
+    if (residue.resn=="PSU" && allowX<3)
+    {
+        record_name="ATOM  ";
+        residue.resn="  U";
+    }
+    else if (residue.resn=="  I") residue.resn="  A";
+    else if (residue.resn==" DA") residue.resn="  A";
+    else if (residue.resn==" DC") residue.resn="  C";
+    else if (residue.resn==" DG") residue.resn="  G";
+    else if (residue.resn==" DT") residue.resn="  U";
     residue.het=(record_name=="HETATM");
     chain.chainID=line[21];
     if (chainIDmap.find(chain.chainID)==chainIDmap.end())
@@ -254,7 +264,9 @@ string write_pdb_structure(ChainUnit &chain,int &i)
     size_t r,a;
 
     for (r=0;r<chain.residues.size();r++)
+    {
         for (a=0;a<chain.residues[r].atoms.size();a++)
+        {
             buf<<setiosflags(ios::left)<<setw(6)
                <<(chain.residues[r].het?"HETATM":"ATOM")
                <<resetiosflags(ios::left)<<setw(5)<<i++<<' '
@@ -264,7 +276,14 @@ string write_pdb_structure(ChainUnit &chain,int &i)
                <<"   " <<setiosflags(ios::fixed)<<setprecision(3)
                <<setw(8)<<chain.residues[r].atoms[a].xyz[0]
                <<setw(8)<<chain.residues[r].atoms[a].xyz[1]
-               <<setw(8)<<chain.residues[r].atoms[a].xyz[2]<<endl;
+               <<setw(8)<<chain.residues[r].atoms[a].xyz[2];
+            if (chain.residues[r].atoms[a].movable)
+                 buf<<"  1.00  1.00           ";
+            else buf<<"  1.00  0.00           ";
+            buf<<chain.residues[r].atoms[a].name[1]<<endl;
+
+        }
+    }
     return buf.str();
 }
 

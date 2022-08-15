@@ -31,16 +31,18 @@ int fixBaseConformation(ResidueUnit &residue,
     xyz_list1.assign(atomNum,tmp);
     xyz_list2.assign(atomNum,tmp);
 
+    b=0;
     for (a=11;a<residue.atoms.size();a++)
     {
         if (immovableCount>=3 && residue.atoms[a].movable) continue;
-        xyz_list1[a-11][0]=ideal_rna[residue.resn][residue.atoms[a].name][0];
-        xyz_list1[a-11][1]=ideal_rna[residue.resn][residue.atoms[a].name][1];
-        xyz_list1[a-11][2]=ideal_rna[residue.resn][residue.atoms[a].name][2];
+        xyz_list1[b][0]=ideal_rna[residue.resn][residue.atoms[a].name][0];
+        xyz_list1[b][1]=ideal_rna[residue.resn][residue.atoms[a].name][1];
+        xyz_list1[b][2]=ideal_rna[residue.resn][residue.atoms[a].name][2];
 
-        xyz_list2[a-11][0]=residue.atoms[a].xyz[0];
-        xyz_list2[a-11][1]=residue.atoms[a].xyz[1];
-        xyz_list2[a-11][2]=residue.atoms[a].xyz[2];
+        xyz_list2[b][0]=residue.atoms[a].xyz[0];
+        xyz_list2[b][1]=residue.atoms[a].xyz[1];
+        xyz_list2[b][2]=residue.atoms[a].xyz[2];
+        b++;
     }
 
     atomNum=countUniqAtom(xyz_list2);

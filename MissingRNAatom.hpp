@@ -637,7 +637,7 @@ bool fillMissingRNAatomInStack(const size_t c1, const size_t r1,
     }
     for (a=0;a<pdb_entry.chains[c2].residues[r2].atoms.size();a++)
     {
-        if (pdb_entry.chains[c2].residues[r1].atoms[a].movable) continue;
+        if (pdb_entry.chains[c2].residues[r2].atoms[a].movable) continue;
         ChangeCoor(ideal_rna[key2][pdb_entry.chains[c2].residues[r2].atoms[a].name],
             RotMatix,TranVect,xyz_list1[atomNum]);
         tmp[0]+=(pdb_entry.chains[c2].residues[r2].atoms[a].xyz[0]-xyz_list1[atomNum][0]);

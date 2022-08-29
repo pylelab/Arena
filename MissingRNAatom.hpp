@@ -91,9 +91,9 @@ size_t countUniqAtom(vector<vector<float> >&xyz_list2)
     {
         dup=0;
         for (b=0;b<a;b++)
-            if (abs(xyz_list2[a][0]-xyz_list2[b][0])+
-                abs(xyz_list2[a][1]-xyz_list2[b][1])+
-                abs(xyz_list2[a][2]-xyz_list2[b][2])<Extra) dup++;
+            if (fabs(xyz_list2[a][0]-xyz_list2[b][0])+
+                fabs(xyz_list2[a][1]-xyz_list2[b][1])+
+                fabs(xyz_list2[a][2]-xyz_list2[b][2])<Extra) dup++;
         if (dup) atomNum--;
     }
     return atomNum;

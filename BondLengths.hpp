@@ -194,7 +194,7 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 					    // Calculate the current bond length
 					    b = sqrt((a2x-a1x)*(a2x-a1x) + (a2y-a1y)*(a2y-a1y) + (a2z-a1z)*(a2z-a1z));
 					    // Calculate fractional difference between the current and ideal bond lengths
-					    diff = abs(b - b_ideal) / b_ideal;
+					    diff = fabs(b - b_ideal) / b_ideal;
 					    // Check if difference is greater than or equal to the allowed tolerance
 					    if (diff >= tolerance && b>0.0001){
 						    //cout << resname << resnumber << atom1 << atom2 << b << ' ' << b_ideal << ' ' << diff <<endl;
@@ -287,7 +287,7 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 					// Calculate the current bond length
 					b = sqrt((a2x-a1x)*(a2x-a1x) + (a2y-a1y)*(a2y-a1y) + (a2z-a1z)*(a2z-a1z));
 					// Calculate fractional difference between the current and ideal bond lengths
-					diff = abs(b - b_ideal) / b_ideal;
+					diff = fabs(b - b_ideal) / b_ideal;
 					// Check if difference is greater than or equal to the allowed tolerance
 					if (diff >= tolerance && b>0.0001){
 						//cout << resname << resnumber << atom1 << atom2 << b << ' ' << b_ideal << ' ' << diff <<endl;

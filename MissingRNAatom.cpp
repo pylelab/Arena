@@ -20,6 +20,7 @@ const char* docstring=""
 #include "BondLengths.hpp"
 #include "BaseConformation.hpp"
 #include "cssr.hpp"
+#include "AtomicClashes.hpp"
 
 int main(int argc,char **argv)
 {
@@ -66,6 +67,7 @@ int main(int argc,char **argv)
                 filter_bp(bp_vec);
             }
             moved+=fixBaseConformation(pdb_entry, ideal_rna, bp_vec);
+            moved+=fix_clashes(pdb_entry);
  
             // if no atoms are moved, immediately break out of this for loop
     	    if (moved==0) break;

@@ -70,14 +70,28 @@ int fix_clashes (ModelUnit &pep){
 				for (int r2=0; r2<pep.chains[c2].residues.size(); r2++){
 					string resname2 = pep.chains[c2].residues[r2].resn;
 					int resnumber2 = pep.chains[c2].residues[r2].resi;
-					// check each combination of r1 and r2 only once
+
+					/* Check C1'-C1' distance */
+					// Get (x,y,z) coordinates
+					float C1x1 = pep.chains[c1].residues[r1].atoms[11].xyz[0];
+					float C1y1 = pep.chains[c1].residues[r1].atoms[11].xyz[1];
+					float C1z1 = pep.chains[c1].residues[r1].atoms[11].xyz[2];
+					float C1x2 = pep.chains[c2].residues[r2].atoms[11].xyz[0];
+					float C1y2 = pep.chains[c2].residues[r2].atoms[11].xyz[1];
+					float C1z2 = pep.chains[c2].residues[r2].atoms[11].xyz[2];
+					// Calculate the distance between two C1' atoms
+					float C1_distance = sqrt((C1x2-C1x1)*(C1x2-C1x1) + (C1y2-C1y1)*(C1y2-C1y1) + (C1z2-C1z1)*(C1z2-C1z1));
+					//cout << C1_distance << endl;
+					if (C1_distance > 18.161) continue; // Not possible for a clash to occur
+
+					// Check each combination of r1 and r2 only once
 					if (c1 == c2 && r1 >= r2) continue;
 						// Iterate through all pairs of atoms
 						for (int a1=0; a1<pep.chains[c1].residues[r1].atoms.size(); a1++){
 							string atom1 = pep.chains[c1].residues[r1].atoms[a1].name;
 							for (int a2=0; a2<pep.chains[c2].residues[r2].atoms.size(); a2++){
 								string atom2 = pep.chains[c2].residues[r2].atoms[a2].name;
-								// don't check OSP bonds
+								// Don't check OSP bonds
 								if (r1+1==r2 && c1==c2 && a1 < 9 && a2 < 4 && OSP_bonds[a1][a2] > 0) continue;
 									// Get the VDW radius of each atom in the pair
 				 					if (resname1 == "  A"){
@@ -98,7 +112,7 @@ int fix_clashes (ModelUnit &pep){
 				 					} else if (resname2 == "  U"){
 				 						vdw2 = U_vdw[a2];
 				 					}
-				 					// calculate the clash distance
+				 					// Calculate the clash distance
 				 					float c = vdw1 + vdw2 - 0.4;
 				 					// Get (x,y,z) coordinates
 									float a1x = pep.chains[c1].residues[r1].atoms[a1].xyz[0];
@@ -112,8 +126,30 @@ int fix_clashes (ModelUnit &pep){
 					
 									// Compare the atomic and clash distances
 				 					if (d < c){
-				 						cout << "clash" << resname1 << resnumber1 << atom1 << resname2 << resnumber2 << atom2 << "distance= " << d << ' ' << "vdw= " << c << endl;
-				 						moved++;
+				 						//cout << "clash" << resname1 << resnumber1 << atom1 << resname2 << resnumber2 << atom2 << "distance= " << d << ' ' << "vdw= " << c << endl;
+				 						// Calculate difference from VDW distance
+				 						float delta = d - (vdw1 + vdw2); 
+				 						if (pep.chains[c1].residues[r1].atoms[a1].movable==1 && pep.chains[c2].residues[r2].atoms[a2].movable==0){
+											moved++;
+											pep.chains[c1].residues[r1].atoms[a1].xyz[0] = (delta/d)*(a2x-a1x) + a1x;
+											pep.chains[c1].residues[r1].atoms[a1].xyz[1] = (delta/d)*(a2y-a1y) + a1y;
+											pep.chains[c1].residues[r1].atoms[a1].xyz[2] = (delta/d)*(a2z-a1z) + a1z;
+										} else if (pep.chains[c1].residues[r1].atoms[a1].movable==0 && pep.chains[c2].residues[r2].atoms[a2].movable==1){
+											moved++;
+											pep.chains[c2].residues[r2].atoms[a2].xyz[0] = (delta/d)*(a1x-a2x) + a2x;
+											pep.chains[c2].residues[r2].atoms[a2].xyz[1] = (delta/d)*(a1y-a2y) + a2y;
+											pep.chains[c2].residues[r2].atoms[a2].xyz[2] = (delta/d)*(a1z-a2z) + a2z;
+										} else if (pep.chains[c1].residues[r1].atoms[a1].movable==1 && pep.chains[c2].residues[r2].atoms[a2].movable==1){
+											moved++;
+											// move each atom half the required distance
+											pep.chains[c2].residues[r2].atoms[a2].xyz[0] = 0.5*((delta/d)*(a1x-a2x)) + a2x;
+											pep.chains[c2].residues[r2].atoms[a2].xyz[1] = 0.5*((delta/d)*(a1y-a2y)) + a2y;
+											pep.chains[c2].residues[r2].atoms[a2].xyz[2] = 0.5*((delta/d)*(a1z-a2z)) + a2z;
+											pep.chains[c1].residues[r1].atoms[a1].xyz[0] = 0.5*((delta/d)*(a2x-a1x)) + a1x;
+											pep.chains[c1].residues[r1].atoms[a1].xyz[1] = 0.5*((delta/d)*(a2y-a1y)) + a1y;
+											pep.chains[c1].residues[r1].atoms[a1].xyz[2] = 0.5*((delta/d)*(a2z-a1z)) + a1z;
+										}
+										//cout << "clash" << resname1 << resnumber1 << atom1 << resname2 << resnumber2 << atom2 << "distance= " << d << ' ' << "vdw= " << c << endl;
 				 					}
 				 			}
 				 		}

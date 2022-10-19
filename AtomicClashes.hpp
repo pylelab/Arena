@@ -23,32 +23,32 @@ using namespace std;
 
 // A
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1' N9 C8 N7 C5 C6 N6 N1 C2 N3 C4
-float A_vdw[22] = {1.8, 1.52, 1.52, 1.52, 1.7, 1.7, 1.52, 1.7, 1.52, 1.7, 1.52, 1.7, 1.55, 1.7, 1.55, 1.7, 1.7, 1.55, 1.55, 1.7, 1.55, 1.7};
+double A_vdw[22] = {1.8, 1.52, 1.52, 1.52, 1.7, 1.7, 1.52, 1.7, 1.52, 1.7, 1.52, 1.7, 1.55, 1.7, 1.55, 1.7, 1.7, 1.55, 1.55, 1.7, 1.55, 1.7};
 
 // C
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1' N1 C2 O2 N3 C4 N4 C5 C6
-float C_vdw[20] = {1.8, 1.52, 1.52, 1.52, 1.7, 1.7, 1.52, 1.7, 1.52, 1.7, 1.52, 1.7, 1.55, 1.7, 1.52, 1.55, 1.7, 1.55, 1.7, 1.7};
+double C_vdw[20] = {1.8, 1.52, 1.52, 1.52, 1.7, 1.7, 1.52, 1.7, 1.52, 1.7, 1.52, 1.7, 1.55, 1.7, 1.52, 1.55, 1.7, 1.55, 1.7, 1.7};
 
 // G
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1' N9 C8 N7 C5 C6 O6 N1 C2 N2 N3 C4
-float G_vdw[23] = {1.8, 1.52, 1.52, 1.52, 1.7, 1.7, 1.52, 1.7, 1.52, 1.7, 1.52, 1.7, 1.55, 1.7, 1.55, 1.7, 1.7, 1.52, 1.55, 1.7, 1.55, 1.55, 1.7};
+double G_vdw[23] = {1.8, 1.52, 1.52, 1.52, 1.7, 1.7, 1.52, 1.7, 1.52, 1.7, 1.52, 1.7, 1.55, 1.7, 1.55, 1.7, 1.7, 1.52, 1.55, 1.7, 1.55, 1.55, 1.7};
 
 // U
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1' N1 C2 O2 N3 C4 O4 C5 C6
-float U_vdw[20] = {1.8, 1.52, 1.52, 1.52, 1.7, 1.7, 1.52, 1.7, 1.52, 1.7, 1.52, 1.7, 1.55, 1.7, 1.52, 1.55, 1.7, 1.52, 1.7, 1.7};
+double U_vdw[20] = {1.8, 1.52, 1.52, 1.52, 1.7, 1.7, 1.52, 1.7, 1.52, 1.7, 1.52, 1.7, 1.55, 1.7, 1.52, 1.55, 1.7, 1.52, 1.7, 1.7};
 
 
 int fix_clashes (ModelUnit &pep){
 	
 	// Initialize variables
-	float vdw1 = 0;
-	float vdw2 = 0;
+	double vdw1 = 0;
+	double vdw2 = 0;
 
 	int moved = 0;
 
 	// OSP
 	// Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3'
-	float OSP_bonds[9][4] = {
+	double OSP_bonds[9][4] = {
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
@@ -59,6 +59,9 @@ int fix_clashes (ModelUnit &pep){
 		{2.648, 0, 0, 0},
 		{1.610, 2.505, 2.505, 2.504}
 	};
+
+	// conversion to grid coordinate (time complexity of L)
+	// test different lattice constants (similar to clash value, ex: 18A)
 
  	// Iterate through chains
 	for (int c1=0; c1<pep.chains.size(); c1++){
@@ -71,21 +74,24 @@ int fix_clashes (ModelUnit &pep){
 					string resname2 = pep.chains[c2].residues[r2].resn;
 					int resnumber2 = pep.chains[c2].residues[r2].resi;
 
+					// Check each combination of r1 and r2 only once
+					if (c1 == c2 && r1 >= r2) continue;
+
+					// check if grid coordinates overlap or not; if they are not the same or adjacent grid point, there is no way for them to clash
+
 					/* Check C1'-C1' distance */
 					// Get (x,y,z) coordinates
-					float C1x1 = pep.chains[c1].residues[r1].atoms[11].xyz[0];
-					float C1y1 = pep.chains[c1].residues[r1].atoms[11].xyz[1];
-					float C1z1 = pep.chains[c1].residues[r1].atoms[11].xyz[2];
-					float C1x2 = pep.chains[c2].residues[r2].atoms[11].xyz[0];
-					float C1y2 = pep.chains[c2].residues[r2].atoms[11].xyz[1];
-					float C1z2 = pep.chains[c2].residues[r2].atoms[11].xyz[2];
+					double C1x1 = pep.chains[c1].residues[r1].atoms[11].xyz[0];
+					double C1y1 = pep.chains[c1].residues[r1].atoms[11].xyz[1];
+					double C1z1 = pep.chains[c1].residues[r1].atoms[11].xyz[2];
+					double C1x2 = pep.chains[c2].residues[r2].atoms[11].xyz[0];
+					double C1y2 = pep.chains[c2].residues[r2].atoms[11].xyz[1];
+					double C1z2 = pep.chains[c2].residues[r2].atoms[11].xyz[2];
 					// Calculate the distance between two C1' atoms
-					float C1_distance = sqrt((C1x2-C1x1)*(C1x2-C1x1) + (C1y2-C1y1)*(C1y2-C1y1) + (C1z2-C1z1)*(C1z2-C1z1));
+					double C1_distance = sqrt((C1x2-C1x1)*(C1x2-C1x1) + (C1y2-C1y1)*(C1y2-C1y1) + (C1z2-C1z1)*(C1z2-C1z1));
 					//cout << C1_distance << endl;
 					if (C1_distance > 18.161) continue; // Not possible for a clash to occur
 
-					// Check each combination of r1 and r2 only once
-					if (c1 == c2 && r1 >= r2) continue;
 						// Iterate through all pairs of atoms
 						for (int a1=0; a1<pep.chains[c1].residues[r1].atoms.size(); a1++){
 							string atom1 = pep.chains[c1].residues[r1].atoms[a1].name;
@@ -113,22 +119,22 @@ int fix_clashes (ModelUnit &pep){
 				 						vdw2 = U_vdw[a2];
 				 					}
 				 					// Calculate the clash distance
-				 					float c = vdw1 + vdw2 - 0.4;
+				 					double c = vdw1 + vdw2 - 0.4;
 				 					// Get (x,y,z) coordinates
-									float a1x = pep.chains[c1].residues[r1].atoms[a1].xyz[0];
-									float a1y = pep.chains[c1].residues[r1].atoms[a1].xyz[1];
-									float a1z = pep.chains[c1].residues[r1].atoms[a1].xyz[2];
-									float a2x = pep.chains[c2].residues[r2].atoms[a2].xyz[0];
-									float a2y = pep.chains[c2].residues[r2].atoms[a2].xyz[1];
-									float a2z = pep.chains[c2].residues[r2].atoms[a2].xyz[2];
+									double a1x = pep.chains[c1].residues[r1].atoms[a1].xyz[0];
+									double a1y = pep.chains[c1].residues[r1].atoms[a1].xyz[1];
+									double a1z = pep.chains[c1].residues[r1].atoms[a1].xyz[2];
+									double a2x = pep.chains[c2].residues[r2].atoms[a2].xyz[0];
+									double a2y = pep.chains[c2].residues[r2].atoms[a2].xyz[1];
+									double a2z = pep.chains[c2].residues[r2].atoms[a2].xyz[2];
 									// Calculate the atomic distance
-									float d = sqrt((a2x-a1x)*(a2x-a1x) + (a2y-a1y)*(a2y-a1y) + (a2z-a1z)*(a2z-a1z));
+									double d = sqrt((a2x-a1x)*(a2x-a1x) + (a2y-a1y)*(a2y-a1y) + (a2z-a1z)*(a2z-a1z));
 					
 									// Compare the atomic and clash distances
-				 					if (d < c){
+				 					if (d < c && d > 0.0001){
 				 						//cout << "clash" << resname1 << resnumber1 << atom1 << resname2 << resnumber2 << atom2 << "distance= " << d << ' ' << "vdw= " << c << endl;
 				 						// Calculate difference from VDW distance
-				 						float delta = d - (vdw1 + vdw2); 
+				 						double delta = d - (vdw1 + vdw2); 
 				 						if (pep.chains[c1].residues[r1].atoms[a1].movable==1 && pep.chains[c2].residues[r2].atoms[a2].movable==0){
 											moved++;
 											pep.chains[c1].residues[r1].atoms[a1].xyz[0] = (delta/d)*(a2x-a1x) + a1x;

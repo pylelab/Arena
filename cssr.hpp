@@ -9,67 +9,67 @@
 
 using namespace std;
 
-const float Pm_mu    = 53.755; const float Pm_sd    =42.773; // P[i-1]-P[i]-P[j]-P[j-1]
-const float Pp_mu    = 80.233; const float Pp_sd    =20.466; // P[i+1]-P[i]-P[j]-P[j+1]
-const float O5m_mu   = 60.047; const float O5m_sd   =38.731; // O5'[i-1]-O5'[i]-O5'[j]-O5'[j-1]
-const float O5p_mu   = 96.645; const float O5p_sd   =20.185; // O5'[i+1]-O5'[i]-O5'[j]-O5'[j+1]
-const float C5m_mu   = 58.526; const float C5m_sd   =36.222; // C5'[i-1]-C5'[i]-C5'[j]-C5'[j-1]
-const float C5p_mu   =100.129; const float C5p_sd   =23.505; // C5'[i+1]-C5'[i]-C5'[j]-C5'[j+1]
-const float C4m_mu   = 64.830; const float C4m_sd   =31.640; // C4'[i-1]-C4'[i]-C4'[j]-C4'[j-1]
-const float C4p_mu   =115.546; const float C4p_sd   =23.989; // C4'[i+1]-C4'[i]-C4'[j]-C4'[j+1]
-const float C3m_mu   = 80.193; const float C3m_sd   =26.156; // C3'[i-1]-C3'[i]-C3'[j]-C3'[j-1]
-const float C3p_mu   =133.291; const float C3p_sd   =26.435; // C3'[i+1]-C3'[i]-C3'[j]-C3'[j+1]
-const float C2m_mu   = 87.048; const float C2m_sd   =31.557; // C2'[i-1]-C2'[i]-C2'[j]-C2'[j-1]
-const float C2p_mu   =147.550; const float C2p_sd   =29.374; // C2'[i+1]-C2'[i]-C2'[j]-C2'[j+1]
-const float C1m_mu   = 74.283; const float C1m_sd   =38.789; // C1'[i-1]-C1'[i]-C1'[j]-C1'[j-1]
-const float C1p_mu   =134.728; const float C1p_sd   =27.557; // C1'[i+1]-C1'[i]-C1'[j]-C1'[j+1]
-const float O4m_mu   = 62.955; const float O4m_sd   =38.254; // O4'[i-1]-O4'[i]-O4'[j]-O4'[j-1]
-const float O4p_mu   =113.863; const float O4p_sd   =24.303; // O4'[i+1]-O4'[i]-O4'[j]-O4'[j+1]
-const float O3m_mu   = 80.432; const float O3m_sd   =22.356; // O3'[i-1]-O3'[i]-O3'[j]-O3'[j-1]
-const float O3p_mu   =137.697; const float O3p_sd   =28.655; // O3'[i+1]-O3'[i]-O3'[j]-O3'[j+1]
-const float P44P_mu  = -0.166; const float P44P_sd  =28.901; // P[i]-C4'[i]-C4'[j]-P[j]
-const float C4114C_mu=172.313; const float C4114C_sd=43.508; // C4'[i]-C1'[i]-C1'[j]-C4'[j]
-const float PP_mu    = 18.564; const float PP_sd    = 0.896; // P[i]-P[j]
-const float O5O5_mu  = 16.808; const float O5O5_sd  = 0.774; // O5'[i]-O5'[j]
-const float C5C5_mu  = 17.160; const float C5C5_sd  = 0.513; // C5'[i]-C5'[j]
-const float C4C4_mu  = 15.018; const float C4C4_sd  = 0.419; // C4'[i]-C4'[j]
-const float C3C3_mu  = 13.676; const float C3C3_sd  = 0.498; // C3'[i]-C3'[j]
-const float C2C2_mu  = 11.046; const float C2C2_sd  = 0.515; // C2'[i]-C2'[j]
-const float C1C1_mu  = 10.659; const float C1C1_sd  = 0.336; // C1'[i]-C1'[j]
-const float O4O4_mu  = 13.232; const float O4O4_sd  = 0.399; // O4'[i]-O4'[j]
-const float O3O3_mu  = 15.266; const float O3O3_sd  = 0.641; // O3'[i]-O3'[j]
-const float NN_mu    =  8.929; const float NN_sd    = 0.250; // N[i]-N[j]
-const float aPm_mu   =109.192; const float aPm_sd   =21.448; // <P[i-1]P[i],P[j+1]P[j]>
-const float aPp_mu   =109.326; const float aPp_sd   =20.496; // <P[i+1]P[i],P[j-1]P[j]>
-const float aO5m_mu  = 97.545; const float aO5m_sd  =18.629; // <O5'[i-1]O5'[i],O5'[j+1]O5'[j]>
-const float aO5p_mu  = 97.816; const float aO5p_sd  =18.227; // <O5'[i+1]O5'[i],O5'[j-1]O5'[j]>
-const float aC5m_mu  = 94.309; const float aC5m_sd  =19.724; // <C5'[i-1]C5'[i],C5'[j+1]C5'[j]>
-const float aC5p_mu  = 94.640; const float aC5p_sd  =19.843; // <C5'[i+1]C5'[i],C5'[j-1]C5'[j]>
-const float aC4m_mu  = 81.590; const float aC4m_sd  =17.368; // <C4'[i-1]C4'[i],C4'[j+1]C4'[j]>
-const float aC4p_mu  = 81.352; const float aC4p_sd  =18.082; // <C4'[i+1]C4'[i],C4'[j-1]C4'[j]>
-const float aC3m_mu  = 71.338; const float aC3m_sd  =17.754; // <C3'[i-1]C3'[i],C3'[j+1]C3'[j]>
-const float aC3p_mu  = 70.590; const float aC3p_sd  =18.100; // <C3'[i+1]C3'[i],C3'[j-1]C3'[j]>
-const float aC2m_mu  = 59.411; const float aC2m_sd  =20.249; // <C2'[i-1]C2'[i],C2'[j+1]C2'[j]>
-const float aC2p_mu  = 58.352; const float aC2p_sd  =20.141; // <C2'[i+1]C2'[i],C2'[j-1]C2'[j]>
-const float aC1m_mu  = 64.542; const float aC1m_sd  =19.817; // <C1'[i-1]C1'[i],C1'[j+1]C1'[j]>
-const float aC1p_mu  = 63.616; const float aC1p_sd  =20.319; // <C1'[i+1]C1'[i],C1'[j-1]C1'[j]>
-const float aO4m_mu  = 78.198; const float aO4m_sd  =17.830; // <O4'[i-1]O4'[i],O4'[j+1]O4'[j]>
-const float aO4p_mu  = 77.672; const float aO4p_sd  =18.859; // <O4'[i+1]O4'[i],O4'[j-1]O4'[j]>
-const float aO3m_mu  = 70.536; const float aO3m_sd  =17.393; // <O3'[i-1]O3'[i],O3'[j+1]O3'[j]>
-const float aO3p_mu  = 69.919; const float aO3p_sd  =17.786; // <O3'[i+1]O3'[i],O3'[j-1]O3'[j]>
-const float aPC_mu   = 59.764; const float aPC_sd   =18.397; // <P[i]C4'[i],P[j]C4'[j]>
-const float aCC_mu   =165.213; const float aCC_sd   =13.607; // <C4'[i]C1'[i],C4'[j]C1'[j]>
+const double Pm_mu    = 53.755; const double Pm_sd    =42.773; // P[i-1]-P[i]-P[j]-P[j-1]
+const double Pp_mu    = 80.233; const double Pp_sd    =20.466; // P[i+1]-P[i]-P[j]-P[j+1]
+const double O5m_mu   = 60.047; const double O5m_sd   =38.731; // O5'[i-1]-O5'[i]-O5'[j]-O5'[j-1]
+const double O5p_mu   = 96.645; const double O5p_sd   =20.185; // O5'[i+1]-O5'[i]-O5'[j]-O5'[j+1]
+const double C5m_mu   = 58.526; const double C5m_sd   =36.222; // C5'[i-1]-C5'[i]-C5'[j]-C5'[j-1]
+const double C5p_mu   =100.129; const double C5p_sd   =23.505; // C5'[i+1]-C5'[i]-C5'[j]-C5'[j+1]
+const double C4m_mu   = 64.830; const double C4m_sd   =31.640; // C4'[i-1]-C4'[i]-C4'[j]-C4'[j-1]
+const double C4p_mu   =115.546; const double C4p_sd   =23.989; // C4'[i+1]-C4'[i]-C4'[j]-C4'[j+1]
+const double C3m_mu   = 80.193; const double C3m_sd   =26.156; // C3'[i-1]-C3'[i]-C3'[j]-C3'[j-1]
+const double C3p_mu   =133.291; const double C3p_sd   =26.435; // C3'[i+1]-C3'[i]-C3'[j]-C3'[j+1]
+const double C2m_mu   = 87.048; const double C2m_sd   =31.557; // C2'[i-1]-C2'[i]-C2'[j]-C2'[j-1]
+const double C2p_mu   =147.550; const double C2p_sd   =29.374; // C2'[i+1]-C2'[i]-C2'[j]-C2'[j+1]
+const double C1m_mu   = 74.283; const double C1m_sd   =38.789; // C1'[i-1]-C1'[i]-C1'[j]-C1'[j-1]
+const double C1p_mu   =134.728; const double C1p_sd   =27.557; // C1'[i+1]-C1'[i]-C1'[j]-C1'[j+1]
+const double O4m_mu   = 62.955; const double O4m_sd   =38.254; // O4'[i-1]-O4'[i]-O4'[j]-O4'[j-1]
+const double O4p_mu   =113.863; const double O4p_sd   =24.303; // O4'[i+1]-O4'[i]-O4'[j]-O4'[j+1]
+const double O3m_mu   = 80.432; const double O3m_sd   =22.356; // O3'[i-1]-O3'[i]-O3'[j]-O3'[j-1]
+const double O3p_mu   =137.697; const double O3p_sd   =28.655; // O3'[i+1]-O3'[i]-O3'[j]-O3'[j+1]
+const double P44P_mu  = -0.166; const double P44P_sd  =28.901; // P[i]-C4'[i]-C4'[j]-P[j]
+const double C4114C_mu=172.313; const double C4114C_sd=43.508; // C4'[i]-C1'[i]-C1'[j]-C4'[j]
+const double PP_mu    = 18.564; const double PP_sd    = 0.896; // P[i]-P[j]
+const double O5O5_mu  = 16.808; const double O5O5_sd  = 0.774; // O5'[i]-O5'[j]
+const double C5C5_mu  = 17.160; const double C5C5_sd  = 0.513; // C5'[i]-C5'[j]
+const double C4C4_mu  = 15.018; const double C4C4_sd  = 0.419; // C4'[i]-C4'[j]
+const double C3C3_mu  = 13.676; const double C3C3_sd  = 0.498; // C3'[i]-C3'[j]
+const double C2C2_mu  = 11.046; const double C2C2_sd  = 0.515; // C2'[i]-C2'[j]
+const double C1C1_mu  = 10.659; const double C1C1_sd  = 0.336; // C1'[i]-C1'[j]
+const double O4O4_mu  = 13.232; const double O4O4_sd  = 0.399; // O4'[i]-O4'[j]
+const double O3O3_mu  = 15.266; const double O3O3_sd  = 0.641; // O3'[i]-O3'[j]
+const double NN_mu    =  8.929; const double NN_sd    = 0.250; // N[i]-N[j]
+const double aPm_mu   =109.192; const double aPm_sd   =21.448; // <P[i-1]P[i],P[j+1]P[j]>
+const double aPp_mu   =109.326; const double aPp_sd   =20.496; // <P[i+1]P[i],P[j-1]P[j]>
+const double aO5m_mu  = 97.545; const double aO5m_sd  =18.629; // <O5'[i-1]O5'[i],O5'[j+1]O5'[j]>
+const double aO5p_mu  = 97.816; const double aO5p_sd  =18.227; // <O5'[i+1]O5'[i],O5'[j-1]O5'[j]>
+const double aC5m_mu  = 94.309; const double aC5m_sd  =19.724; // <C5'[i-1]C5'[i],C5'[j+1]C5'[j]>
+const double aC5p_mu  = 94.640; const double aC5p_sd  =19.843; // <C5'[i+1]C5'[i],C5'[j-1]C5'[j]>
+const double aC4m_mu  = 81.590; const double aC4m_sd  =17.368; // <C4'[i-1]C4'[i],C4'[j+1]C4'[j]>
+const double aC4p_mu  = 81.352; const double aC4p_sd  =18.082; // <C4'[i+1]C4'[i],C4'[j-1]C4'[j]>
+const double aC3m_mu  = 71.338; const double aC3m_sd  =17.754; // <C3'[i-1]C3'[i],C3'[j+1]C3'[j]>
+const double aC3p_mu  = 70.590; const double aC3p_sd  =18.100; // <C3'[i+1]C3'[i],C3'[j-1]C3'[j]>
+const double aC2m_mu  = 59.411; const double aC2m_sd  =20.249; // <C2'[i-1]C2'[i],C2'[j+1]C2'[j]>
+const double aC2p_mu  = 58.352; const double aC2p_sd  =20.141; // <C2'[i+1]C2'[i],C2'[j-1]C2'[j]>
+const double aC1m_mu  = 64.542; const double aC1m_sd  =19.817; // <C1'[i-1]C1'[i],C1'[j+1]C1'[j]>
+const double aC1p_mu  = 63.616; const double aC1p_sd  =20.319; // <C1'[i+1]C1'[i],C1'[j-1]C1'[j]>
+const double aO4m_mu  = 78.198; const double aO4m_sd  =17.830; // <O4'[i-1]O4'[i],O4'[j+1]O4'[j]>
+const double aO4p_mu  = 77.672; const double aO4p_sd  =18.859; // <O4'[i+1]O4'[i],O4'[j-1]O4'[j]>
+const double aO3m_mu  = 70.536; const double aO3m_sd  =17.393; // <O3'[i-1]O3'[i],O3'[j+1]O3'[j]>
+const double aO3p_mu  = 69.919; const double aO3p_sd  =17.786; // <O3'[i+1]O3'[i],O3'[j-1]O3'[j]>
+const double aPC_mu   = 59.764; const double aPC_sd   =18.397; // <P[i]C4'[i],P[j]C4'[j]>
+const double aCC_mu   =165.213; const double aCC_sd   =13.607; // <C4'[i]C1'[i],C4'[j]C1'[j]>
 
 /* if a residue is paired with multiple other residues, just keep the
  * highest scoring residue pair */
-void filter_bp(vector<pair<float,vector<size_t> > >&bp_vec)
+void filter_bp(vector<pair<double,vector<size_t> > >&bp_vec)
 {
     vector<pair<size_t,size_t> > paired_res_vec;
-    vector<pair<float,size_t> > bp_idx_vec;
+    vector<pair<double,size_t> > bp_idx_vec;
     vector<size_t> filtered_bp_vec;
     size_t bp;
     for (bp=0;bp<bp_vec.size();bp++)
-        bp_idx_vec.push_back(pair<float,size_t>(-bp_vec[bp].first,bp));
+        bp_idx_vec.push_back(pair<double,size_t>(-bp_vec[bp].first,bp));
     sort(bp_idx_vec.begin(), bp_idx_vec.end());
     
     for (bp=0;bp<bp_idx_vec.size();bp++)
@@ -92,9 +92,9 @@ void filter_bp(vector<pair<float,vector<size_t> > >&bp_vec)
                     bp_vec[bp_idx_vec[bp].second].second[3]));
     }
     vector<pair<size_t,size_t> >().swap(paired_res_vec);
-    vector<pair<float,size_t> >().swap(bp_idx_vec);
+    vector<pair<double,size_t> >().swap(bp_idx_vec);
 
-    vector<pair<float,vector<size_t> > >bp_vec_tmp;
+    vector<pair<double,vector<size_t> > >bp_vec_tmp;
     for (bp=0;bp<bp_vec.size();bp++)
     {
         if (find(filtered_bp_vec.begin(), filtered_bp_vec.end(),bp
@@ -105,42 +105,42 @@ void filter_bp(vector<pair<float,vector<size_t> > >&bp_vec)
     for (bp=0;bp<bp_vec_tmp.size();bp++)
         bp_vec.push_back(bp_vec_tmp[bp]);
 
-    vector<pair<float,vector<size_t> > >().swap(bp_vec_tmp);
+    vector<pair<double,vector<size_t> > >().swap(bp_vec_tmp);
     vector<size_t>().swap(filtered_bp_vec);
     return;
 }
 
 inline bool bp_tor_score(
-    const vector<float> &c1, const vector<float> &c2,
-    const vector<float> &c3, const vector<float> &c4,
-    const float mu, const float sd, const float tol, const float weight,
-    float &nominator, float &denominator)
+    const vector<double> &c1, const vector<double> &c2,
+    const vector<double> &c3, const vector<double> &c4,
+    const double mu, const double sd, const double tol, const double weight,
+    double &nominator, double &denominator)
 {
-    float tor=rad2deg(Points2Dihedral(c1,c2,c3,c4));
+    double tor=rad2deg(Points2Dihedral(c1,c2,c3,c4));
     if(tor<-180) return false;
     denominator+=weight;
-    float diff=fabs(tor-mu); 
+    double diff=fabs(tor-mu); 
     if (diff>180) diff-=180;
     nominator+=weight*(1-diff/(tol* sd));
     return true;
 }
 
 inline bool bp_ang_score(
-    const vector<float> &c1, const vector<float> &c2,
-    const vector<float> &c3, const vector<float> &c4,
-    const float mu, const float sd, const float tol, const float weight,
-    float &nominator, float &denominator)
+    const vector<double> &c1, const vector<double> &c2,
+    const vector<double> &c3, const vector<double> &c4,
+    const double mu, const double sd, const double tol, const double weight,
+    double &nominator, double &denominator)
 {
-    float ang=rad2deg(Points4Angle(c1,c2,c3,c4));
+    double ang=rad2deg(Points4Angle(c1,c2,c3,c4));
     if(ang<-180) return false;
     denominator+=weight;
     nominator+=weight*(1-fabs(ang-mu)/(tol* sd));
     return true;
 }
 
-inline bool bp_len_score(const vector<float>&c1, const vector<float>&c2,
-    const float mu, const float sd, const float tol, const float weight,
-    float &nominator, float &denominator)
+inline bool bp_len_score(const vector<double>&c1, const vector<double>&c2,
+    const double mu, const double sd, const double tol, const double weight,
+    double &nominator, double &denominator)
 {
     denominator+=weight;
     nominator+=weight*(1-fabs(Points2Distance(c1,c2)-mu)/(tol*sd));
@@ -150,16 +150,16 @@ inline bool bp_len_score(const vector<float>&c1, const vector<float>&c2,
 inline bool bp_nn_score(const bool previnextj, const bool nextiprevj,
     const bool has_prev_ci,       const bool has_next_ci,
     const bool has_prev_cj,       const bool has_next_cj,
-    const vector<float> &prev_ci, const vector<float> &next_ci,
-    const vector<float> &prev_cj, const vector<float> &next_cj,
-    const float mu, const float sd, const float tol, const float weight,
-    float &nominator, float &denominator)
+    const vector<double> &prev_ci, const vector<double> &next_ci,
+    const vector<double> &prev_cj, const vector<double> &next_cj,
+    const double mu, const double sd, const double tol, const double weight,
+    double &nominator, double &denominator)
 {
     if (!(has_prev_ci && has_next_cj) && !(has_next_ci && has_prev_cj))
         return false;
     denominator+=weight;
-    float nominator_previnextj=0;
-    float nominator_nextiprevj=0;
+    double nominator_previnextj=0;
+    double nominator_nextiprevj=0;
     if (has_prev_ci  && has_next_cj )
     {
         nominator_previnextj=1-fabs(Points2Distance(prev_ci,next_cj)-mu)/(tol*sd);
@@ -177,28 +177,28 @@ inline bool bp_nn_score(const bool previnextj, const bool nextiprevj,
     return true;
 }
 
-inline float mean_vec(const vector<float>&vec)
+inline double mean_vec(const vector<double>&vec)
 {
-    float sum=0;
+    double sum=0;
     int i;
     for (i=0;i<vec.size();i++) sum+=vec[i];
     return sum/vec.size();
 }
 
 void cssr(const ModelUnit &pdb_entry, vector<vector<size_t> >&res_str_vec,
-    vector<pair<float,vector<size_t> > >&bp_vec, 
+    vector<pair<double,vector<size_t> > >&bp_vec, 
     const bool interchain=false)
 {
     /* pre-trained parameters */
-    float weight_len=1;
-    float weight_nn =1;
-    float weight_tor=1;
-    float weight_ang=1;
-    float tol=3; // tolerance, in the unit of standard deviation
-    float adjust1=0.1;  // adjust for varying number of tests
-    float adjust2=0;    // adjust for varying std
-    float adjust3=-0.07;// baseline value
-    float totaltest=(10-1)*(weight_len>0)+
+    double weight_len=1;
+    double weight_nn =1;
+    double weight_tor=1;
+    double weight_ang=1;
+    double tol=3; // tolerance, in the unit of standard deviation
+    double adjust1=0.1;  // adjust for varying number of tests
+    double adjust2=0;    // adjust for varying std
+    double adjust3=-0.07;// baseline value
+    double totaltest=(10-1)*(weight_len>0)+
                     (10-1)*(weight_nn >0)+
                     ( 9-1)*(weight_tor>0)+
                     (10-1)*(weight_ang>0);
@@ -206,52 +206,52 @@ void cssr(const ModelUnit &pdb_entry, vector<vector<size_t> >&res_str_vec,
     /* other variables */
     vector<size_t> tmp_bp(5,0);
     vector<size_t> tmp_nt(2,0);
-    float ang;
+    double ang;
     size_t c1, c2, r1, r2, a1, a2;
     char base1,base2;
     char base1prev,base1next;
     char base2prev,base2next;
     char icode,chainID;
     stringstream ss;
-    float nominator, denominator;
-    float nominator_previnextj;
-    float nominator_nextiprevj;
+    double nominator, denominator;
+    double nominator_previnextj;
+    double nominator_nextiprevj;
     int   successtest;
     bool previnextj,nextiprevj;
 
     /* coordinates of previous residue */
-    vector<float>prev_Pi(3,0);  bool has_prev_Pi;  vector<float>prev_Pj(3,0);  bool has_prev_Pj; 
-    vector<float>prev_O5i(3,0); bool has_prev_O5i; vector<float>prev_O5j(3,0); bool has_prev_O5j;
-    vector<float>prev_C5i(3,0); bool has_prev_C5i; vector<float>prev_C5j(3,0); bool has_prev_C5j;
-    vector<float>prev_C4i(3,0); bool has_prev_C4i; vector<float>prev_C4j(3,0); bool has_prev_C4j;
-    vector<float>prev_C3i(3,0); bool has_prev_C3i; vector<float>prev_C3j(3,0); bool has_prev_C3j;
-    vector<float>prev_C2i(3,0); bool has_prev_C2i; vector<float>prev_C2j(3,0); bool has_prev_C2j;
-    vector<float>prev_C1i(3,0); bool has_prev_C1i; vector<float>prev_C1j(3,0); bool has_prev_C1j;
-    vector<float>prev_O4i(3,0); bool has_prev_O4i; vector<float>prev_O4j(3,0); bool has_prev_O4j;
-    vector<float>prev_O3i(3,0); bool has_prev_O3i; vector<float>prev_O3j(3,0); bool has_prev_O3j;
-    vector<float>prev_Nxi(3,0); bool has_prev_Nxi; vector<float>prev_Nxj(3,0); bool has_prev_Nxj;
+    vector<double>prev_Pi(3,0);  bool has_prev_Pi;  vector<double>prev_Pj(3,0);  bool has_prev_Pj; 
+    vector<double>prev_O5i(3,0); bool has_prev_O5i; vector<double>prev_O5j(3,0); bool has_prev_O5j;
+    vector<double>prev_C5i(3,0); bool has_prev_C5i; vector<double>prev_C5j(3,0); bool has_prev_C5j;
+    vector<double>prev_C4i(3,0); bool has_prev_C4i; vector<double>prev_C4j(3,0); bool has_prev_C4j;
+    vector<double>prev_C3i(3,0); bool has_prev_C3i; vector<double>prev_C3j(3,0); bool has_prev_C3j;
+    vector<double>prev_C2i(3,0); bool has_prev_C2i; vector<double>prev_C2j(3,0); bool has_prev_C2j;
+    vector<double>prev_C1i(3,0); bool has_prev_C1i; vector<double>prev_C1j(3,0); bool has_prev_C1j;
+    vector<double>prev_O4i(3,0); bool has_prev_O4i; vector<double>prev_O4j(3,0); bool has_prev_O4j;
+    vector<double>prev_O3i(3,0); bool has_prev_O3i; vector<double>prev_O3j(3,0); bool has_prev_O3j;
+    vector<double>prev_Nxi(3,0); bool has_prev_Nxi; vector<double>prev_Nxj(3,0); bool has_prev_Nxj;
     /* coordinates of current residue */
-    vector<float>Pi(3,0);  bool has_Pi;  vector<float>Pj(3,0);  bool has_Pj; 
-    vector<float>O5i(3,0); bool has_O5i; vector<float>O5j(3,0); bool has_O5j;
-    vector<float>C5i(3,0); bool has_C5i; vector<float>C5j(3,0); bool has_C5j;
-    vector<float>C4i(3,0); bool has_C4i; vector<float>C4j(3,0); bool has_C4j;
-    vector<float>C3i(3,0); bool has_C3i; vector<float>C3j(3,0); bool has_C3j;
-    vector<float>C2i(3,0); bool has_C2i; vector<float>C2j(3,0); bool has_C2j;
-    vector<float>C1i(3,0); bool has_C1i; vector<float>C1j(3,0); bool has_C1j;
-    vector<float>O4i(3,0); bool has_O4i; vector<float>O4j(3,0); bool has_O4j;
-    vector<float>O3i(3,0); bool has_O3i; vector<float>O3j(3,0); bool has_O3j;
-    vector<float>Nxi(3,0); bool has_Nxi; vector<float>Nxj(3,0); bool has_Nxj;
+    vector<double>Pi(3,0);  bool has_Pi;  vector<double>Pj(3,0);  bool has_Pj; 
+    vector<double>O5i(3,0); bool has_O5i; vector<double>O5j(3,0); bool has_O5j;
+    vector<double>C5i(3,0); bool has_C5i; vector<double>C5j(3,0); bool has_C5j;
+    vector<double>C4i(3,0); bool has_C4i; vector<double>C4j(3,0); bool has_C4j;
+    vector<double>C3i(3,0); bool has_C3i; vector<double>C3j(3,0); bool has_C3j;
+    vector<double>C2i(3,0); bool has_C2i; vector<double>C2j(3,0); bool has_C2j;
+    vector<double>C1i(3,0); bool has_C1i; vector<double>C1j(3,0); bool has_C1j;
+    vector<double>O4i(3,0); bool has_O4i; vector<double>O4j(3,0); bool has_O4j;
+    vector<double>O3i(3,0); bool has_O3i; vector<double>O3j(3,0); bool has_O3j;
+    vector<double>Nxi(3,0); bool has_Nxi; vector<double>Nxj(3,0); bool has_Nxj;
     /* coordinates of next residue */
-    vector<float>next_Pi(3,0);  bool has_next_Pi;  vector<float>next_Pj(3,0);  bool has_next_Pj; 
-    vector<float>next_O5i(3,0); bool has_next_O5i; vector<float>next_O5j(3,0); bool has_next_O5j;
-    vector<float>next_C5i(3,0); bool has_next_C5i; vector<float>next_C5j(3,0); bool has_next_C5j;
-    vector<float>next_C4i(3,0); bool has_next_C4i; vector<float>next_C4j(3,0); bool has_next_C4j;
-    vector<float>next_C3i(3,0); bool has_next_C3i; vector<float>next_C3j(3,0); bool has_next_C3j;
-    vector<float>next_C2i(3,0); bool has_next_C2i; vector<float>next_C2j(3,0); bool has_next_C2j;
-    vector<float>next_C1i(3,0); bool has_next_C1i; vector<float>next_C1j(3,0); bool has_next_C1j;
-    vector<float>next_O4i(3,0); bool has_next_O4i; vector<float>next_O4j(3,0); bool has_next_O4j;
-    vector<float>next_O3i(3,0); bool has_next_O3i; vector<float>next_O3j(3,0); bool has_next_O3j;
-    vector<float>next_Nxi(3,0); bool has_next_Nxi; vector<float>next_Nxj(3,0); bool has_next_Nxj;
+    vector<double>next_Pi(3,0);  bool has_next_Pi;  vector<double>next_Pj(3,0);  bool has_next_Pj; 
+    vector<double>next_O5i(3,0); bool has_next_O5i; vector<double>next_O5j(3,0); bool has_next_O5j;
+    vector<double>next_C5i(3,0); bool has_next_C5i; vector<double>next_C5j(3,0); bool has_next_C5j;
+    vector<double>next_C4i(3,0); bool has_next_C4i; vector<double>next_C4j(3,0); bool has_next_C4j;
+    vector<double>next_C3i(3,0); bool has_next_C3i; vector<double>next_C3j(3,0); bool has_next_C3j;
+    vector<double>next_C2i(3,0); bool has_next_C2i; vector<double>next_C2j(3,0); bool has_next_C2j;
+    vector<double>next_C1i(3,0); bool has_next_C1i; vector<double>next_C1j(3,0); bool has_next_C1j;
+    vector<double>next_O4i(3,0); bool has_next_O4i; vector<double>next_O4j(3,0); bool has_next_O4j;
+    vector<double>next_O3i(3,0); bool has_next_O3i; vector<double>next_O3j(3,0); bool has_next_O3j;
+    vector<double>next_Nxi(3,0); bool has_next_Nxi; vector<double>next_Nxj(3,0); bool has_next_Nxj;
 
     /* loop over base pairs */
     for (c1=0; c1<pdb_entry.chains.size(); c1++)
@@ -821,7 +821,7 @@ void cssr(const ModelUnit &pdb_entry, vector<vector<size_t> >&res_str_vec,
                     }
                     
                     if (denominator>0) bp_vec.push_back(
-                        pair<float,vector<size_t> >(nominator/denominator+
+                        pair<double,vector<size_t> >(nominator/denominator+
                         adjust1*successtest/totaltest+adjust3, tmp_bp));
                 }
             }

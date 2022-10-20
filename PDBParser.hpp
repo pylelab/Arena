@@ -20,7 +20,7 @@ using namespace std;
 struct AtomUnit    // struct for each atom entry
 {
     string name;       // atom name
-    vector<float> xyz; // coordinate
+    vector<double> xyz; // coordinate
     bool movable;       // 0 if atom is in input, 1 if atom is added by the program
 };
 

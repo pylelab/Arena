@@ -39,14 +39,14 @@ int main(int argc,char **argv)
     ModelUnit pdb_entry=read_pdb_structure(argv[1],atomic_detail,allowX);
     
     vector<vector<size_t> >res_str_vec;
-    vector<pair<float,vector<size_t> > > bp_vec;
+    vector<pair<double,vector<size_t> > > bp_vec;
     if (option>=5)
     {
         cssr(pdb_entry, res_str_vec, bp_vec);
         filter_bp(bp_vec);
     }
    
-    map<string, map<string,vector<float> > >ideal_rna=parse_ideal_rna();
+    map<string, map<string,vector<double> > >ideal_rna=parse_ideal_rna();
     MissingRNAatom(pdb_entry,ideal_rna,bp_vec,option);
 
     if (option>=5)
@@ -75,10 +75,10 @@ int main(int argc,char **argv)
     	}
     }
     
-    map<string, map<string,vector<float> > >().swap(ideal_rna);
+    map<string, map<string,vector<double> > >().swap(ideal_rna);
     write_pdb_structure(outfile.c_str(),pdb_entry);
     vector<ChainUnit>().swap(pdb_entry.chains);
     vector<vector<size_t> >().swap(res_str_vec);
-    vector<pair<float,vector<size_t> > > ().swap(bp_vec);
+    vector<pair<double,vector<size_t> > > ().swap(bp_vec);
     return 0;
 }

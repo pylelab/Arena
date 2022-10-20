@@ -27,10 +27,10 @@ using namespace std;
  * columns contain, on output, the normalized eigen_vec of
  * a. n_rot returns the number of Jacobi rotations that were required.
  */
-int jacobi3(float a[3][3], float d[3], float v[3][3], int* n_rot)
+int jacobi3(double a[3][3], double d[3], double v[3][3], int* n_rot)
 {
   int count, k, i, j;
-  float tresh, theta, tau, t, sum, s, h, g, c, b[3], z[3];
+  double tresh, theta, tau, t, sum, s, h, g, c, b[3], z[3];
 
   /*Initialize v to the identity matrix.*/
   for (i=0; i<3; i++) 
@@ -98,12 +98,12 @@ int jacobi3(float a[3][3], float d[3], float v[3][3], int* n_rot)
           {
             theta = 0.5 * h / (a[i][j]);
             t = 1.0 / ( fabs(theta) +
-                        (float)sqrt(1.0 + theta*theta) );
+                        (double)sqrt(1.0 + theta*theta) );
             if (theta < 0.0) 
               t = -t;
           }
           
-          c = 1.0 / (float) sqrt(1 + t*t);
+          c = 1.0 / (double) sqrt(1 + t*t);
           s = t * c;
           tau = s / (1.0 + c);
           h = t * a[i][j];
@@ -144,20 +144,20 @@ int jacobi3(float a[3][3], float d[3], float v[3][3], int* n_rot)
   return (0);
 }  
 
-void normalize(float a[3])
+void normalize(double a[3])
 {
-  float  b = 1/sqrt((float)(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]));
+  double  b = 1/sqrt((double)(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]));
   a[0] *= b;
   a[1] *= b;
   a[2] *= b;
 }
 
-float dot_prod(float a[3], float b[3])
+double dot_prod(double a[3], double b[3])
 {
   return (a[0] * b[0] + a[1] * b[1] + a[2] * b[2]);
 }
 
-static void cross(float a[3], float b[3], float c[3])
+static void cross(double a[3], double b[3], double c[3])
 {
   a[0] = b[1]*c[2] - b[2]*c[1];
   a[1] = b[2]*c[0] - b[0]*c[2];
@@ -169,13 +169,13 @@ static void cross(float a[3], float b[3], float c[3])
  *
  *    Diagonalize a 3x3 matrix & sort eigenval by size
  */
-int diagonalize_symmetric(float matrix[3][3], 
-                          float eigen_vec[3][3], 
-                          float eigenval[3])
+int diagonalize_symmetric(double matrix[3][3], 
+                          double eigen_vec[3][3], 
+                          double eigenval[3])
 {
   int n_rot, i, j, k;
-  float vec[3][3];
-  float val; 
+  double vec[3][3];
+  double val; 
   
   if (!jacobi3(matrix, eigenval, vec, &n_rot)) 
   {
@@ -218,28 +218,28 @@ int diagonalize_symmetric(float matrix[3][3],
 }
 
 
-void VectorTimesMatrix(float *v1, const vector<vector<float> > &rotation_matrix,  float *v2)
+void VectorTimesMatrix(double *v1, const vector<vector<double> > &rotation_matrix,  double *v2)
 {
 	v2[0]=v1[0]*rotation_matrix[0][0]+v1[1]*rotation_matrix[1][0]+v1[2]*rotation_matrix[2][0];
 	v2[1]=v1[0]*rotation_matrix[0][1]+v1[1]*rotation_matrix[1][1]+v1[2]*rotation_matrix[2][1];
 	v2[2]=v1[0]*rotation_matrix[0][2]+v1[1]*rotation_matrix[1][2]+v1[2]*rotation_matrix[2][2];
 }
 
-void ChangeCoor(vector<float> &v1, const vector<vector<float> > &rotation_matrix, const vector<float> &translate_vec,vector<float> &v2)
+void ChangeCoor(vector<double> &v1, const vector<vector<double> > &rotation_matrix, const vector<double> &translate_vec,vector<double> &v2)
 {
 	v2[0]=v1[0]*rotation_matrix[0][0]+v1[1]*rotation_matrix[1][0]+v1[2]*rotation_matrix[2][0]+translate_vec[0];
 	v2[1]=v1[0]*rotation_matrix[0][1]+v1[1]*rotation_matrix[1][1]+v1[2]*rotation_matrix[2][1]+translate_vec[1];
 	v2[2]=v1[0]*rotation_matrix[0][2]+v1[1]*rotation_matrix[1][2]+v1[2]*rotation_matrix[2][2]+translate_vec[2];
 }
 
-void RotateCoor(const vector<vector<float> > &target_stru,const vector<vector<float> > &refrence_stru, vector<vector<float> > &RotMatix, vector<float> &TranVect)
+void RotateCoor(const vector<vector<double> > &target_stru,const vector<vector<double> > &refrence_stru, vector<vector<double> > &RotMatix, vector<double> &TranVect)
 {
 	int i, j, k, n;
 	
 	const int n_list=target_stru.size();
 	
 	//save two structure
-	float ref_xlist[n_list][3],mov_xlist[n_list][3];
+	double ref_xlist[n_list][3],mov_xlist[n_list][3];
 	for(i=0;i<n_list;i++) 
 	{
 		for(j=0;j<3;j++)
@@ -250,10 +250,10 @@ void RotateCoor(const vector<vector<float> > &target_stru,const vector<vector<fl
 	}
 	
 	//translate two structure to the centre of mass, calculate correlation matrix
-	float ref_com[3];
-	float mov_com[3];
-	float mov_to_ref[3];
-      float R[3][3];
+	double ref_com[3];
+	double mov_com[3];
+	double mov_to_ref[3];
+      double R[3][3];
 	
 	/* calculate the centre of mass */
 	for (i=0; i<3; i++)
@@ -308,9 +308,9 @@ void RotateCoor(const vector<vector<float> > &target_stru,const vector<vector<fl
 	}
 	
 	//calculate rotation matrix and translate vector
-	float Rt[3][3], RtR[3][3];
-	float left_eigenvec[3][3], right_eigenvec[3][3], eigenval[3];
-	float v[3];
+	double Rt[3][3], RtR[3][3];
+	double left_eigenvec[3][3], right_eigenvec[3][3], eigenval[3];
+	double v[3];
 	
 	/* build Rt, transpose of R  */
 	for (i=0; i<3; i++)
@@ -370,7 +370,7 @@ void RotateCoor(const vector<vector<float> > &target_stru,const vector<vector<fl
 			      RotMatix[i][j] += left_eigenvec[k][i] * right_eigenvec[k][j];
 		}
 	}
-	float temp[3];
+	double temp[3];
 	VectorTimesMatrix(ref_com, RotMatix, temp);
 	TranVect[0]=refrence_stru[0][0]-mov_xlist[0][0]-temp[0];
 	TranVect[1]=refrence_stru[0][1]-mov_xlist[0][1]-temp[1];

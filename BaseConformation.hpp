@@ -7,14 +7,14 @@
 #include "cssr.hpp"
 
 int fixBaseConformation(ResidueUnit &residue,
-    map<string, map<string,vector<float> > >&ideal_rna)
+    map<string, map<string,vector<double> > >&ideal_rna)
 {
-    vector<float> tmp(3,0);
+    vector<double> tmp(3,0);
     size_t atomNum=residue.atoms.size()-11;
-    vector<vector<float> > xyz_list1;
-    vector<vector<float> > xyz_list2;
-    vector<vector<float> > RotMatix;  // U
-    vector<float> TranVect;  // t
+    vector<vector<double> > xyz_list1;
+    vector<vector<double> > xyz_list2;
+    vector<vector<double> > RotMatix;  // U
+    vector<double> TranVect;  // t
     size_t a,b;
 
     int immovableCount=0;
@@ -74,7 +74,7 @@ int fixBaseConformation(ResidueUnit &residue,
         TranVect[2]/=xyz_list1.size();
     }
 
-    float rmsd=0;
+    double rmsd=0;
     for (a=0;a<xyz_list1.size();a++)
     {
         ChangeCoor(xyz_list1[a], RotMatix, TranVect, tmp);
@@ -112,15 +112,15 @@ int fixBaseConformation(ResidueUnit &residue,
 }
 
 int fixBasePairConformation(ResidueUnit &residue1, ResidueUnit &residue2,
-    map<string, map<string,vector<float> > >&ideal_rna)
+    map<string, map<string,vector<double> > >&ideal_rna)
 {
-    vector<float> tmp(3,0);
+    vector<double> tmp(3,0);
     size_t atomNum=residue1.atoms.size()-11;
     atomNum      +=residue2.atoms.size()-11;
-    vector<vector<float> > xyz_list1;
-    vector<vector<float> > xyz_list2;
-    vector<vector<float> > RotMatix;  // U
-    vector<float> TranVect;  // t
+    vector<vector<double> > xyz_list1;
+    vector<vector<double> > xyz_list2;
+    vector<vector<double> > RotMatix;  // U
+    vector<double> TranVect;  // t
     size_t a,b;
 
     int immovableCount=0;
@@ -178,7 +178,7 @@ int fixBasePairConformation(ResidueUnit &residue1, ResidueUnit &residue2,
 
     RotateCoor(xyz_list1,xyz_list2, RotMatix, TranVect);
     
-    float rmsd=0;
+    double rmsd=0;
     for (a=0;a<xyz_list1.size();a++)
     {
         ChangeCoor(xyz_list1[a], RotMatix, TranVect, tmp);
@@ -224,8 +224,8 @@ int fixBasePairConformation(ResidueUnit &residue1, ResidueUnit &residue2,
 }
 
 int fixBaseConformation(ModelUnit &pdb_entry, 
-    map<string, map<string,vector<float> > >&ideal_rna,
-    const vector<pair<float,vector<size_t> > >&bp_vec)
+    map<string, map<string,vector<double> > >&ideal_rna,
+    const vector<pair<double,vector<size_t> > >&bp_vec)
 {
     size_t c,r;
     int moved=0;

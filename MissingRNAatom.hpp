@@ -9,7 +9,7 @@
 /* return true if residue is standard nucleotide
  * return false otherwise */
 bool checkMissingRNAatom(ResidueUnit &residue, 
-    map<string, map<string,vector<float> > >&ideal_rna,
+    map<string, map<string,vector<double> > >&ideal_rna,
     vector<string> &missing_atom_vec,
     vector<size_t> &nonstd_atom_vec, const int option=0)
 {
@@ -54,7 +54,7 @@ bool checkMissingRNAatom(ResidueUnit &residue,
         }
     }
     
-    map<string,vector<float> >::iterator it;
+    map<string,vector<double> >::iterator it;
     bool found;
     for (it=ideal_rna[residue.resn].begin(); it!=ideal_rna[residue.resn].end(); it++)
     {
@@ -81,10 +81,10 @@ bool checkMissingRNAatom(ResidueUnit &residue,
     return true;
 }
 
-size_t countUniqAtom(vector<vector<float> >&xyz_list2)
+size_t countUniqAtom(vector<vector<double> >&xyz_list2)
 {
     size_t atomNum=xyz_list2.size();
-    float Extra=1.0e-6;
+    double Extra=1.0e-6;
     size_t dup;
     size_t a,b;
     for (a=1;a<xyz_list2.size();a++)
@@ -100,14 +100,14 @@ size_t countUniqAtom(vector<vector<float> >&xyz_list2)
 }
 
 void fillMissingRNAatom(ResidueUnit &residue,
-    map<string, map<string,vector<float> > >&ideal_rna,
+    map<string, map<string,vector<double> > >&ideal_rna,
     vector<string>missing_atom_vec)
 {
-    vector<float> tmp(3,0);
-    vector<vector<float> > xyz_list1(residue.atoms.size(),tmp);
-    vector<vector<float> > xyz_list2(residue.atoms.size(),tmp);
-    vector<vector<float> > RotMatix;  // U
-    vector<float> TranVect;  // t
+    vector<double> tmp(3,0);
+    vector<vector<double> > xyz_list1(residue.atoms.size(),tmp);
+    vector<vector<double> > xyz_list2(residue.atoms.size(),tmp);
+    vector<vector<double> > RotMatix;  // U
+    vector<double> TranVect;  // t
 
     size_t a,b;
     for (a=0;a<residue.atoms.size();a++)
@@ -179,14 +179,14 @@ void fillMissingRNAatom(ResidueUnit &residue,
 }
 
 void fillMissingRNAatom(size_t r, ChainUnit &chain, ChainUnit &fill_chain,
-    map<string, map<string,vector<float> > >&ideal_rna,
+    map<string, map<string,vector<double> > >&ideal_rna,
     vector<string>missing_atom_vec)
 {
-    vector<float> tmp(3,0);
-    vector<vector<float> > xyz_list1;
-    vector<vector<float> > xyz_list2;
-    vector<vector<float> > RotMatix;  // U
-    vector<float> TranVect;  // t
+    vector<double> tmp(3,0);
+    vector<vector<double> > xyz_list1;
+    vector<vector<double> > xyz_list2;
+    vector<vector<double> > RotMatix;  // U
+    vector<double> TranVect;  // t
 
     size_t a,a0,a1,a2;
     string key,key0,key1,key2;
@@ -329,14 +329,14 @@ void fillMissingRNAatom(size_t r, ChainUnit &chain, ChainUnit &fill_chain,
 bool fillMissingRNAatomInPair(const size_t c1, const size_t r1, 
     const size_t c2, const size_t r2,
     const ModelUnit &pdb_entry, ChainUnit &fill_chain,
-    map<string, map<string,vector<float> > >&ideal_rna,
+    map<string, map<string,vector<double> > >&ideal_rna,
     vector<string>missing_atom_vec)
 {
-    vector<float> tmp(3,0);
-    vector<vector<float> > xyz_list1;
-    vector<vector<float> > xyz_list2;
-    vector<vector<float> > RotMatix;  // U
-    vector<float> TranVect;  // t
+    vector<double> tmp(3,0);
+    vector<vector<double> > xyz_list1;
+    vector<vector<double> > xyz_list2;
+    vector<vector<double> > RotMatix;  // U
+    vector<double> TranVect;  // t
     string key1=pdb_entry.chains[c1].residues[r1].resn;
     string key2=pdb_entry.chains[c2].residues[r2].resn;
 
@@ -425,14 +425,14 @@ bool fillMissingRNAatomInPair(const size_t c1, const size_t r1,
 bool fillMissingRNAatomInStack(const size_t c1, const size_t r1,
     const size_t c2, const size_t r2, const bool stack_prev,
     const bool stack_next, const ModelUnit &pdb_entry, ChainUnit &fill_chain,
-    map<string, map<string,vector<float> > >&ideal_rna,
+    map<string, map<string,vector<double> > >&ideal_rna,
     vector<string>missing_atom_vec)
 {
-    vector<float> tmp(3,0);
-    vector<vector<float> > xyz_list1;
-    vector<vector<float> > xyz_list2;
-    vector<vector<float> > RotMatix;  // U
-    vector<float> TranVect;  // t
+    vector<double> tmp(3,0);
+    vector<vector<double> > xyz_list1;
+    vector<vector<double> > xyz_list2;
+    vector<vector<double> > RotMatix;  // U
+    vector<double> TranVect;  // t
     string key, key1, key2;
     
     cout<<"reconstructing residue pair "
@@ -683,7 +683,7 @@ bool check3atomInPair(ModelUnit &pdb_entry, const size_t c2,const size_t r2,
     return atomNum>=3;
 }
 
-bool checkAtomInStack(const vector<pair<float, vector<size_t> > >&bp_vec,
+bool checkAtomInStack(const vector<pair<double, vector<size_t> > >&bp_vec,
     const size_t c1, const size_t r1, const size_t c2, const size_t r2,
     bool &stack_prev, bool &stack_next)
 {
@@ -703,8 +703,8 @@ bool checkAtomInStack(const vector<pair<float, vector<size_t> > >&bp_vec,
 }
 
 bool MissingRNAatom(ModelUnit &pdb_entry, const size_t c,
-    map<string, map<string,vector<float> > >&ideal_rna,
-    const vector<pair<float,vector<size_t> > >&bp_vec,
+    map<string, map<string,vector<double> > >&ideal_rna,
+    const vector<pair<double,vector<size_t> > >&bp_vec,
     const int option=0)
 {
     vector<string> missing_atom_vec;
@@ -907,8 +907,8 @@ bool MissingRNAatom(ModelUnit &pdb_entry, const size_t c,
 }
 
 bool MissingRNAatom(ModelUnit &pdb_entry, 
-    map<string, map<string,vector<float> > >&ideal_rna,
-    const vector<pair<float,vector<size_t> > >&bp_vec,
+    map<string, map<string,vector<double> > >&ideal_rna,
+    const vector<pair<double,vector<size_t> > >&bp_vec,
     const int option=0)
 {
     size_t c;

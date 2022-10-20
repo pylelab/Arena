@@ -5,21 +5,21 @@
 
 using namespace std;
 
-map<string, map<string,vector<float> > >parse_ideal_rna()
+map<string, map<string,vector<double> > >parse_ideal_rna()
 {
-    vector<float> tmp(3,0);
-    map<string, map<string,vector<float> > >ideal_rna;
+    vector<double> tmp(3,0);
+    map<string, map<string,vector<double> > >ideal_rna;
 
-    map<string,vector<float> >P;
+    map<string,vector<double> >P;
     P[" O3'"]=tmp; P[" O3'"][0]=   7.397; P[" O3'"][1]=   5.908; P[" O3'"][2]=  -5.390;
     P[" P  "]=tmp; P[" P  "][0]=   6.913; P[" P  "][1]=   5.099; P[" P  "][2]=  -6.683;
     P[" OP1"]=tmp; P[" OP1"][0]=   7.496; P[" OP1"][1]=   5.711; P[" OP1"][2]=  -7.898;
     P[" OP2"]=tmp; P[" OP2"][0]=   5.439; P[" OP2"][1]=   4.971; P[" OP2"][2]=  -6.666;
     P[" O5'"]=tmp; P[" O5'"][0]=   7.579; P[" O5'"][1]=   3.667; P[" O5'"][2]=  -6.429;
     ideal_rna["P"]=P;
-    map<string,vector<float> >().swap(P);
+    map<string,vector<double> >().swap(P);
 
-    map<string,vector<float> >A;
+    map<string,vector<double> >A;
     A[" P  "]=tmp; A[" P  "][0]=   3.063; A[" P  "][1]=   8.025; A[" P  "][2]=  -4.135;
     A[" OP1"]=tmp; A[" OP1"][0]=   3.223; A[" OP1"][1]=   8.856; A[" OP1"][2]=  -5.350;
     A[" OP2"]=tmp; A[" OP2"][0]=   1.891; A[" OP2"][1]=   7.121; A[" OP2"][2]=  -4.118;
@@ -43,9 +43,9 @@ map<string, map<string,vector<float> > >parse_ideal_rna()
     A[" N3 "]=tmp; A[" N3 "][0]=   6.725; A[" N3 "][1]=   2.179; A[" N3 "][2]=  -0.716;
     A[" C4 "]=tmp; A[" C4 "][0]=   5.655; A[" C4 "][1]=   2.893; A[" C4 "][2]=  -1.121;
     ideal_rna["  A"]=A;
-    map<string,vector<float> >().swap(A);
+    map<string,vector<double> >().swap(A);
 
-    map<string,vector<float> >C;
+    map<string,vector<double> >C;
     C[" P  "]=tmp; C[" P  "][0]=   6.913; C[" P  "][1]=   5.099; C[" P  "][2]=  -6.683;
     C[" OP1"]=tmp; C[" OP1"][0]=   7.496; C[" OP1"][1]=   5.711; C[" OP1"][2]=  -7.898;
     C[" OP2"]=tmp; C[" OP2"][0]=   5.439; C[" OP2"][1]=   4.971; C[" OP2"][2]=  -6.666;
@@ -67,9 +67,9 @@ map<string, map<string,vector<float> > >parse_ideal_rna()
     C[" C5 "]=tmp; C[" C5 "][0]=   4.874; C[" C5 "][1]=   1.442; C[" C5 "][2]=  -4.299;
     C[" C6 "]=tmp; C[" C6 "][0]=   6.214; C[" C6 "][1]=   1.492; C[" C6 "][2]=  -4.509;
     ideal_rna["  C"]=C;
-    map<string,vector<float> >().swap(C);
+    map<string,vector<double> >().swap(C);
 
-    map<string,vector<float> >G;
+    map<string,vector<double> >G;
     G[" P  "]=tmp; G[" P  "][0]=  -1.758; G[" P  "][1]=  -8.408; G[" P  "][2]=   1.587;
     G[" OP1"]=tmp; G[" OP1"][0]=  -2.072; G[" OP1"][1]=  -9.193; G[" OP1"][2]=   2.802;
     G[" OP2"]=tmp; G[" OP2"][0]=  -2.256; G[" OP2"][1]=  -7.014; G[" OP2"][2]=   1.570;
@@ -94,9 +94,9 @@ map<string, map<string,vector<float> > >parse_ideal_rna()
     G[" N3 "]=tmp; G[" N3 "][0]=   4.507; G[" N3 "][1]=  -5.512; G[" N3 "][2]=  -1.826;
     G[" C4 "]=tmp; G[" C4 "][0]=   3.207; G[" C4 "][1]=  -5.489; G[" C4 "][2]=  -1.431;
     ideal_rna["  G"]=G;
-    map<string,vector<float> >().swap(G);
+    map<string,vector<double> >().swap(G);
 
-    map<string,vector<float> >U;
+    map<string,vector<double> >U;
     U[" P  "]=tmp; U[" P  "][0]=   3.063; U[" P  "][1]=  -8.025; U[" P  "][2]=   4.135;
     U[" OP1"]=tmp; U[" OP1"][0]=   3.223; U[" OP1"][1]=  -8.856; U[" OP1"][2]=   5.350;
     U[" OP2"]=tmp; U[" OP2"][0]=   1.891; U[" OP2"][1]=  -7.121; U[" OP2"][2]=   4.118;
@@ -118,29 +118,29 @@ map<string, map<string,vector<float> > >parse_ideal_rna()
     U[" C5 "]=tmp; U[" C5 "][0]=   3.322; U[" C5 "][1]=  -3.869; U[" C5 "][2]=   1.760;
     U[" C6 "]=tmp; U[" C6 "][0]=   4.416; U[" C6 "][1]=  -4.621; U[" C6 "][2]=   1.964;
     ideal_rna["  U"]=U;
-    map<string,vector<float> >().swap(U);
+    map<string,vector<double> >().swap(U);
 
-    map<string,vector<float> >A0;
+    map<string,vector<double> >A0;
     A0[" P  "]=tmp; A0[" P  "][0]=   3.063; A0[" P  "][1]=   8.025; A0[" P  "][2]=  -4.135;
     A0[" C4'"]=tmp; A0[" C4'"][0]=   6.719; A0[" C4'"][1]=   6.889; A0[" C4'"][2]=  -3.258;
     A0[" C1'"]=tmp; A0[" C1'"][0]=   6.874; A0[" C1'"][1]=   4.999; A0[" C1'"][2]=  -1.877;
-    map<string,vector<float> >A1;
+    map<string,vector<double> >A1;
     A1[" P  "]=tmp; A1[" P  "][0]=   6.913; A1[" P  "][1]=   5.099; A1[" P  "][2]=  -6.683;
     A1[" C4'"]=tmp; A1[" C4'"][0]=   9.376; A1[" C4'"][1]=   2.167; A1[" C4'"][2]=  -5.806;
     A1[" C1'"]=tmp; A1[" C1'"][0]=   8.486; A1[" C1'"][1]=   0.494; A1[" C1'"][2]=  -4.425;
-    map<string,vector<float> >A2;
+    map<string,vector<double> >A2;
     A2[" P  "]=tmp; A2[" P  "][0]=   8.572; A2[" P  "][1]=   0.556; A2[" P  "][2]=  -9.231;
     A2[" C4'"]=tmp; A2[" C4'"][0]=   9.061; A2[" C4'"][1]=  -3.241; A2[" C4'"][2]=  -8.354;
     A2[" C1'"]=tmp; A2[" C1'"][0]=   7.407; A2[" C1'"][1]=  -4.169; A2[" C1'"][2]=  -6.973;
-    map<string,vector<float> >B0;
+    map<string,vector<double> >B0;
     B0[" P  "]=tmp; B0[" P  "][0]=  -6.022; B0[" P  "][1]=  -6.126; B0[" P  "][2]=  -0.961;
     B0[" C4'"]=tmp; B0[" C4'"][0]=  -3.467; B0[" C4'"][1]=  -8.977; B0[" C4'"][2]=  -1.838;
     B0[" C1'"]=tmp; B0[" C1'"][0]=  -1.685; B0[" C1'"][1]=  -8.331; B0[" C1'"][2]=  -3.219;
-    map<string,vector<float> >B1;
+    map<string,vector<double> >B1;
     B1[" P  "]=tmp; B1[" P  "][0]=  -1.758; B1[" P  "][1]=  -8.408; B1[" P  "][2]=   1.587;
     B1[" C4'"]=tmp; B1[" C4'"][0]=   1.932; B1[" C4'"][1]=  -9.427; B1[" C4'"][2]=   0.710;
     B1[" C1'"]=tmp; B1[" C1'"][0]=   3.084; B1[" C1'"][1]=  -7.921; B1[" C1'"][2]=  -0.671;
-    map<string,vector<float> >B2;
+    map<string,vector<double> >B2;
     B2[" P  "]=tmp; B2[" P  "][0]=   3.063; B2[" P  "][1]=  -8.025; B2[" P  "][2]=   4.135;
     B2[" C4'"]=tmp; B2[" C4'"][0]=   6.719; B2[" C4'"][1]=  -6.889; B2[" C4'"][2]=   3.258;
     B2[" C1'"]=tmp; B2[" C1'"][0]=   6.874; B2[" C1'"][1]=  -4.999; B2[" C1'"][2]=   1.877;
@@ -226,18 +226,18 @@ map<string, map<string,vector<float> > >parse_ideal_rna()
     ideal_rna["  U  U  G0"]=A0; ideal_rna["  U  U  G1"]=A1; ideal_rna["  U  U  G2"]=A2;  ideal_rna["  U  U  G3"]=B0; ideal_rna["  U  U  G4"]=B1; ideal_rna["  U  U  G5"]=B2;
     ideal_rna["  U  U  U0"]=A0; ideal_rna["  U  U  U1"]=A1; ideal_rna["  U  U  U2"]=A2;  ideal_rna["  U  U  U3"]=B0; ideal_rna["  U  U  U4"]=B1; ideal_rna["  U  U  U5"]=B2;
 
-    map<string,vector<float> >().swap(A0);
-    map<string,vector<float> >().swap(B0);
-    map<string,vector<float> >().swap(A1);
-    map<string,vector<float> >().swap(B1);
-    map<string,vector<float> >().swap(A2);
-    map<string,vector<float> >().swap(B2);
+    map<string,vector<double> >().swap(A0);
+    map<string,vector<double> >().swap(B0);
+    map<string,vector<double> >().swap(A1);
+    map<string,vector<double> >().swap(B1);
+    map<string,vector<double> >().swap(A2);
+    map<string,vector<double> >().swap(B2);
 
-    vector<vector<float> > xyz_list1(3,tmp);
-    vector<vector<float> > xyz_list2(3,tmp);
-    vector<vector<float> > RotMatix;  // U
-    vector<float> TranVect;  // t
-    for (map<string, map<string,vector<float> > >::iterator iter = ideal_rna.begin();
+    vector<vector<double> > xyz_list1(3,tmp);
+    vector<vector<double> > xyz_list2(3,tmp);
+    vector<vector<double> > RotMatix;  // U
+    vector<double> TranVect;  // t
+    for (map<string, map<string,vector<double> > >::iterator iter = ideal_rna.begin();
         iter != ideal_rna.end(); iter++)
     {
         string key =  iter->first;
@@ -285,7 +285,7 @@ map<string, map<string,vector<float> > >parse_ideal_rna()
         
         RotateCoor(xyz_list1,xyz_list2, RotMatix, TranVect);
         
-        for (map<string, vector<float> >::iterator i = ideal_rna[nt].begin();
+        for (map<string, vector<double> >::iterator i = ideal_rna[nt].begin();
             i != ideal_rna[nt].end(); i++)
         {
             string k=i-> first;
@@ -295,10 +295,10 @@ map<string, map<string,vector<float> > >parse_ideal_rna()
         }
     }
 
-    vector<vector<float> >().swap(xyz_list1);
-    vector<vector<float> >().swap(xyz_list2);
-    vector<vector<float> >().swap(RotMatix);  // U
-    vector<float> ().swap(TranVect);  // t
-    vector<float> ().swap(tmp);
+    vector<vector<double> >().swap(xyz_list1);
+    vector<vector<double> >().swap(xyz_list2);
+    vector<vector<double> >().swap(RotMatix);  // U
+    vector<double> ().swap(TranVect);  // t
+    vector<double> ().swap(tmp);
     return ideal_rna;
 }

@@ -24,7 +24,7 @@ using namespace std;
 
 // A
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1' N9 C8 N7 C5 C6 N6 N1 C2 N3 C4
-float A_bonds[22][22] = {
+double A_bonds[22][22] = {
 	{0, 1.48, 1.48, 1.598, 2.637, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{1.48, 0, 2.410, 2.532, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{1.48, 2.410, 0, 2.532, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -51,7 +51,7 @@ float A_bonds[22][22] = {
 
 // C
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1' N1 C2 O2 N3 C4 N4 C5 C6
-float C_bonds[20][20] = {
+double C_bonds[20][20] = {
 	{0, 1.48, 1.48, 1.598, 2.637, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{1.48, 0, 2.410, 2.532, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{1.48, 2.410, 0, 2.532, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -76,7 +76,7 @@ float C_bonds[20][20] = {
 
 // G
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1' N9 C8 N7 C5 C6 O6 N1 C2 N2 N3 C4
-float G_bonds[23][23] = {
+double G_bonds[23][23] = {
 	{0, 1.48, 1.48, 1.598, 2.637, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{1.48, 0, 2.410, 2.532, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{1.48, 2.410, 0, 2.532, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -104,7 +104,7 @@ float G_bonds[23][23] = {
 
 // U
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1' N1 C2 O2 N3 C4 O4 C5 C6
-float U_bonds[20][20] = {
+double U_bonds[20][20] = {
 	{0, 1.48, 1.48, 1.598, 2.637, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{1.48, 0, 2.410, 2.532, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{1.48, 2.410, 0, 2.532, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -129,7 +129,7 @@ float U_bonds[20][20] = {
 
 // OSP
 // Atomic order: P OP1 OP2 O5' C5' C4' O4' C3' O3'
-float OSP_bonds[9][4] = {
+double OSP_bonds[9][4] = {
 	{0, 0, 0, 0},
 	{0, 0, 0, 0},
 	{0, 0, 0, 0},
@@ -142,7 +142,7 @@ float OSP_bonds[9][4] = {
 };
 
 // Bond between O3' and P of the next residue
-float OSP = 1.610;
+double OSP = 1.610;
 
 /* check is residue r and residue r+1 is connected */
 bool isConnected(const ModelUnit &pep, const int c, const int r)
@@ -153,21 +153,21 @@ bool isConnected(const ModelUnit &pep, const int c, const int r)
     return false;
 }
 
-int fix_bond_lengths (ModelUnit &pep, float tolerance){
+int fix_bond_lengths (ModelUnit &pep, double tolerance){
 	
 	// Initialize variables
-	float b_ideal = 0;
-	float b = 0;
-	float deltaB = 0;
-	float diff = 0;
+	double b_ideal = 0;
+	double b = 0;
+	double deltaB = 0;
+	double diff = 0;
 	int a2 = 0;
 
-	float a1x = 0;
-	float a1y = 0;
-	float a1z = 0;
-	float a2x = 0;
-	float a2y = 0;
-	float a2z = 0;
+	double a1x = 0;
+	double a1y = 0;
+	double a1z = 0;
+	double a2x = 0;
+	double a2y = 0;
+	double a2z = 0;
 
 	int moved = 0;
 
@@ -316,9 +316,6 @@ int fix_bond_lengths (ModelUnit &pep, float tolerance){
 							pep.chains[c].residues[r].atoms[a1].xyz[1] = 0.5*((deltaB/b)*(a2y-a1y)) + a1y;
 							pep.chains[c].residues[r].atoms[a1].xyz[2] = 0.5*((deltaB/b)*(a2z-a1z)) + a1z;
 						}
-							//if (b == 0){ // if atoms exactly overlapping
-								// generate random direction
-							//}
 					}	
 				}
 			}

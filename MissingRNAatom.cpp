@@ -37,6 +37,7 @@ int main(int argc,char **argv)
     int atomic_detail=2;
     int allowX=0;
     ModelUnit pdb_entry=read_pdb_structure(argv[1],atomic_detail,allowX);
+    const ModelUnit pep;
     
     vector<vector<size_t> >res_str_vec;
     vector<pair<double,vector<size_t> > > bp_vec;
@@ -52,26 +53,32 @@ int main(int argc,char **argv)
     if (option>=5)
     {
         standardize_pdb_order(pdb_entry);
-        for (int t=0; t<100; t++){
-    	    int moved = fix_bond_lengths(pdb_entry, tolerance);
-            
-            if (t%10==0)
-            {
-                size_t bp;
-                for (bp=0;bp<res_str_vec.size();bp++) res_str_vec[bp].clear();
-                res_str_vec.clear();
-                for (bp=0;bp<bp_vec.size();bp++) bp_vec[bp].second.clear();
-                bp_vec.clear();
 
-                cssr(pdb_entry, res_str_vec, bp_vec);
-                filter_bp(bp_vec);
+        for (int c=0; c<pep.chains.size(); c++){
+            int length = pep.chains[c].residues.size();
+            int iterations = round(0.04*length+100);
+
+            for (int t=0; t<iterations; t++){
+        	    int moved = fix_bond_lengths(pdb_entry, tolerance);
+                
+                if (t%10==0)
+                {
+                    size_t bp;
+                    for (bp=0;bp<res_str_vec.size();bp++) res_str_vec[bp].clear();
+                    res_str_vec.clear();
+                    for (bp=0;bp<bp_vec.size();bp++) bp_vec[bp].second.clear();
+                    bp_vec.clear();
+
+                    cssr(pdb_entry, res_str_vec, bp_vec);
+                    filter_bp(bp_vec);
+                }
+                moved+=fixBaseConformation(pdb_entry, ideal_rna, bp_vec);
+                moved+=fix_clashes(pdb_entry);
+     
+                // if no atoms are moved, immediately break out of this for loop
+        	    if (moved==0) break;
+                cout<<"t="<<t<<" moved="<<moved<<endl;
             }
-            moved+=fixBaseConformation(pdb_entry, ideal_rna, bp_vec);
-            moved+=fix_clashes(pdb_entry);
- 
-            // if no atoms are moved, immediately break out of this for loop
-    	    if (moved==0) break;
-            cout<<"t="<<t<<" moved="<<moved<<endl;
     	}
     }
     

@@ -37,7 +37,6 @@ int main(int argc,char **argv)
     int atomic_detail=2;
     int allowX=0;
     ModelUnit pdb_entry=read_pdb_structure(argv[1],atomic_detail,allowX);
-    const ModelUnit pep;
     
     vector<vector<size_t> >res_str_vec;
     vector<pair<double,vector<size_t> > > bp_vec;
@@ -54,8 +53,8 @@ int main(int argc,char **argv)
     {
         standardize_pdb_order(pdb_entry);
 
-        for (int c=0; c<pep.chains.size(); c++){
-            int length = pep.chains[c].residues.size();
+        for (int c=0; c<pdb_entry.chains.size(); c++){
+            int length = pdb_entry.chains[c].residues.size();
             int iterations = round(0.04*length+100);
 
             for (int t=0; t<iterations; t++){

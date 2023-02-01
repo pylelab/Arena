@@ -1,6 +1,6 @@
 # Arena (Atomic Reconstruction of RNA)
 
-## Instructions for running
+## Installation and Set-up
 
 Download Arena from GitHub into your desired location, such as your Desktop:
 ```
@@ -14,10 +14,14 @@ cd Arena
 make Arena
 ```
 
+## Run Arena
+
 Run Arena using one of the provided examples:
 ```
 ./Arena Examples/5osg2.input.pdb Examples/5osg2.output.pdb 5
 ```
+
+## Analyze Results
 
 Calculate RMSD:
 ```

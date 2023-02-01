@@ -6,8 +6,7 @@ Arena is a stand-alone program used for the full-atomic reconstruction of RNA st
 
 Download Arena from GitHub into your desired location, such as your Desktop:
 ```
-cd Desktop/
-git clone git@github.com:pylelab/Arena.git
+git clone https://github.com/pylelab/Arena.git
 ```
 
 In the new Arena folder, compile with Clang:

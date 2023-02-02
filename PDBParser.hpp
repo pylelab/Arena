@@ -1,4 +1,4 @@
-/* parse PDB file into data structure similar to Bio.PDB in biopython
+/* Purpose: parse PDB file into data structure similar to Bio.PDB in biopython
  * (model - chain - residue - atom). */
 #ifndef PDBParser_HPP
 #define PDBParser_HPP 1

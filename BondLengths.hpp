@@ -1,6 +1,5 @@
-/* Purpose: Optimize bond lengths
-Ideal bond lengths are taken from the Amber forcefield parameters.
-The order of each array along both rows and columns is the standard PDB order, with hydrogen atoms omitted.
+/* Purpose: Refine bond lengths and angles
+Ideal bond and pseudobond lengths are taken from the Amber forcefield parameters.
 */
 
 #ifndef BondLengths_HPP
@@ -144,7 +143,7 @@ double OSP_bonds[9][4] = {
 // Bond between O3' and P of the next residue
 double OSP = 1.610;
 
-/* check is residue r and residue r+1 is connected */
+/* Check if residue r and residue r+1 are connected */
 bool isConnected(const ModelUnit &pep, const int c, const int r)
 {
     for (int a=0;a<=12;a++) if (Points2Distance(
@@ -228,17 +227,10 @@ int fix_bond_lengths (ModelUnit &pep, double tolerance){
 				}
 			}
 
-			// bool check_OSP = false; // check O3'-P bond
 			// Iterate through all pairs of backbone atoms
 			for (int a1=0; a1<pep.chains[c].residues[r].atoms.size(); a1++){
 				string atom1 = pep.chains[c].residues[r].atoms[a1].name;
-				//cout << "atom1" << endl;
-				// int r2 = r;
-				// if (a1 == 8){
-				// 	r2 = r + 1; // set r2 equal to the next residue for the O3'-P bond
-				// }
 				for (a2=a1+1; a2<pep.chains[c].residues[r].atoms.size(); a2++){
-					//cout << "atom2" << endl;
 					string atom2 = pep.chains[c].residues[r].atoms[a2].name;
 					bool pass = false;
 					// if neither atom is movable, immediately continue
@@ -247,8 +239,9 @@ int fix_bond_lengths (ModelUnit &pep, double tolerance){
 						continue;
 					}
 					//cout << atom1 << pep.chains[c].residues[r].atoms[a1].movable << endl;
-					// Check if atoms are connected and, if so, save their ideal bond length
 					//cout << "find atom in array" << endl;
+					
+					// Get ideal bond lengths
 					if (resname == "  A"){
 						if (A_bonds[a1][a2]>0){
 							pass = true;
@@ -270,12 +263,7 @@ int fix_bond_lengths (ModelUnit &pep, double tolerance){
 							b_ideal = U_bonds[a1][a2];
 						}
 					}
-					// if (! pass && atom1==" O3'" && check_OSP==false){
-					// 	pass = true;
-					// 	check_OSP=true;
-					// 	b_ideal = OSP;
-						// cout << atom1 << endl;
-					//cout<<"resname="<<resname<<". a1="<<a1<<".a2="<<a2<<".pass="<<pass<<endl;
+
 					if (! pass) continue;
 					// Get (x,y,z) coordinates
 					a1x = pep.chains[c].residues[r].atoms[a1].xyz[0];

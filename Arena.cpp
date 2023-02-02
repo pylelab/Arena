@@ -1,5 +1,5 @@
 const char* docstring=""
-"MissingRNAatoms input.pdb output.pdb [option]\n"
+"Arena input.pdb output.pdb [option]\n"
 "    Find and fill missing atoms in input.pdb\n"
 "    Output filled model to output.pdb\n"
 "option:\n"
@@ -32,7 +32,7 @@ int main(int argc,char **argv)
     string infile =argv[1];
     string outfile=argv[2];
     int option    =(argc>3)?atoi(argv[3]):5;
-    double tolerance =(argc>4)?atoi(argv[4]):0.1; // default tolerance is 1%
+    double tolerance =(argc>4)?atoi(argv[4]):0.1; // default tolerance is 10%
     
     int atomic_detail=2;
     int allowX=0;

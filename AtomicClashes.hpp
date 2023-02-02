@@ -60,9 +60,6 @@ int fix_clashes (ModelUnit &pep){
 		{1.610, 2.505, 2.505, 2.504}
 	};
 
-	// conversion to grid coordinate (time complexity of L)
-	// test different lattice constants (similar to clash value, ex: 18A)
-
  	// Iterate through chains
 	for (int c1=0; c1<pep.chains.size(); c1++){
 		for (int c2=c1; c2<pep.chains.size(); c2++){	
@@ -76,8 +73,6 @@ int fix_clashes (ModelUnit &pep){
 
 					// Check each combination of r1 and r2 only once
 					if (c1 == c2 && r1 >= r2) continue;
-
-					// check if grid coordinates overlap or not; if they are not the same or adjacent grid point, there is no way for them to clash
 
 					/* Check C1'-C1' distance */
 					// Get (x,y,z) coordinates

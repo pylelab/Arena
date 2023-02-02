@@ -1,5 +1,5 @@
 const char* docstring=""
-"MissingRNAatoms input.pdb output.pdb [option]\n"
+"Arena_counter input.pdb output.pdb [option]\n"
 "    Find and fill missing atoms in input.pdb\n"
 "    Output filled model to output.pdb\n"
 "option:\n"
@@ -32,7 +32,7 @@ int main(int argc,char **argv)
     string infile =argv[1];
     string outfile=argv[2];
     int option    =(argc>3)?atoi(argv[3]):5;
-    double tolerance =(argc>4)?atoi(argv[4]):0.1; // default tolerance is 1%
+    double tolerance =(argc>4)?atoi(argv[4]):0.1; // default tolerance is 10%
     
     int atomic_detail=2;
     int allowX=0;
@@ -55,27 +55,6 @@ int main(int argc,char **argv)
     {
         standardize_pdb_order(pdb_entry);
         clash_count+=count_clashes(pdb_entry);
-     //    for (int t=0; t<1; t++){
-    	//     //int moved = fix_bond_lengths(pdb_entry, tolerance);
-            
-     //        // if (t%10==0)
-     //        // {
-     //        //     size_t bp;
-     //        //     for (bp=0;bp<res_str_vec.size();bp++) res_str_vec[bp].clear();
-     //        //     res_str_vec.clear();
-     //        //     for (bp=0;bp<bp_vec.size();bp++) bp_vec[bp].second.clear();
-     //        //     bp_vec.clear();
-
-     //        //     cssr(pdb_entry, res_str_vec, bp_vec);
-     //        //     filter_bp(bp_vec);
-     //        // }
-     //        //moved+=fixBaseConformation(pdb_entry, ideal_rna, bp_vec);
-     //        clash_count+=count_clashes(pdb_entry);
- 
-     //        // if no atoms are moved, immediately break out of this for loop
-    	//     //if (moved==0) break;
-     //        //cout<<"t="<<t<<" moved="<<moved<<endl;
-    	// }
     }
     
     map<string, map<string,vector<double> > >().swap(ideal_rna);
@@ -83,6 +62,7 @@ int main(int argc,char **argv)
     vector<ChainUnit>().swap(pdb_entry.chains);
     vector<vector<size_t> >().swap(res_str_vec);
     vector<pair<double,vector<size_t> > > ().swap(bp_vec);
+    
     // output clash_count to file
     ofstream fp(outfile);
     fp<<clash_count;

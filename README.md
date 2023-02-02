@@ -22,6 +22,11 @@ Run Arena using one of the provided examples:
 ./Arena Examples/5osg2.input.pdb Examples/5osg2.output.pdb 5
 ```
 
+To see the help menu:
+```
+./Arena
+```
+
 ## Analyze Results
 
 Calculate RMSD:

@@ -49,7 +49,7 @@ int main(int argc,char **argv)
     }
    
     map<string, map<string,vector<double> > >ideal_rna=parse_ideal_rna();
-    MissingRNAatom(pdb_entry,ideal_rna,bp_vec,option);
+    MissingRNAatom(pdb_entry,ideal_rna,bp_vec,(option>=5)?5:option);
 
     if (option>=5)
     {

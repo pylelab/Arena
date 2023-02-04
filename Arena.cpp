@@ -12,6 +12,8 @@ const char* docstring=""
 "        least three atoms, remove residues with less than three atoms\n"
 "    5 - (default) remove non-standard atoms, fill atoms for residues with at\n"
 "        least one atom\n"
+//"    6 - remove non-standard atoms, fill atoms for residues with at least one\n"
+//"        atom, (even for preexisting base atoms) fix incorrect base conformation\n"
 ;
 
 #include <iostream>
@@ -74,11 +76,54 @@ int main(int argc,char **argv)
                 moved+=fixBaseConformation(pdb_entry, ideal_rna, bp_vec);
                 moved+=fix_clashes(pdb_entry);
      
+                cout<<"t="<<t<<" moved="<<moved<<endl;
                 // if no atoms are moved, immediately break out of this for loop
         	    if (moved==0) break;
-                cout<<"t="<<t<<" moved="<<moved<<endl;
             }
     	}
+    }
+    if (option>=6)
+    {
+        size_t c,r,a;
+        for (c=0; c<pdb_entry.chains.size(); c++)
+            for (r=0;r<pdb_entry.chains[c].residues.size();r++)
+                for (a=11;a<pdb_entry.chains[c].residues[r].atoms.size();a++)
+                    pdb_entry.chains[c].residues[r].atoms[a].movable=1;
+
+        size_t stage;
+        for (stage=1;stage<=3;stage++)
+        {
+            if (stage!=2)
+            {
+                vector<vector<size_t> >().swap(res_str_vec);
+                vector<pair<double,vector<size_t> > > ().swap(bp_vec);
+            }
+            for (c=0; c<pdb_entry.chains.size(); c++)
+            {
+                int length = pdb_entry.chains[c].residues.size();
+                int iterations = round(0.04*length+100);
+
+                for (int t=0; t<iterations; t++)
+                {
+    	            int moved = fix_bond_lengths(pdb_entry, tolerance);
+                    if (stage==2 && t%10==0)
+                    {
+                        size_t bp;
+                        for (bp=0;bp<res_str_vec.size();bp++) res_str_vec[bp].clear();
+                        res_str_vec.clear();
+                        for (bp=0;bp<bp_vec.size();bp++) bp_vec[bp].second.clear();
+                        bp_vec.clear();
+
+                        cssr(pdb_entry, res_str_vec, bp_vec);
+                        filter_bp(bp_vec);
+                    }
+                    moved+=fixBaseConformation(pdb_entry, ideal_rna, bp_vec);
+    
+                    cout<<"stage"<<stage<<" t="<<t<<" moved="<<moved<<endl;
+    	            if (moved==0) break;
+                }
+            }
+        }
     }
     
     map<string, map<string,vector<double> > >().swap(ideal_rna);

@@ -41,4 +41,6 @@ make Arena_counter
 ```
 
 ## Reference
+Zion R Perry, Anna Marie Pyle, Chengxin Zhang (2023)
+Arena: rapid and accurate reconstruction of full atomic RNA structures from coarse-grained models.
 

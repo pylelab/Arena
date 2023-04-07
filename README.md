@@ -27,7 +27,9 @@ To see the help menu:
 ./Arena
 ```
 
-## Analyze Results
+## Special Case: Multiple Models
+
+## Benchmarking Scripts
 
 Calculate RMSD:
 ```

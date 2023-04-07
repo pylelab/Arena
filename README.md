@@ -29,6 +29,10 @@ To see the help menu:
 
 ## Special Case: Multiple Models
 
+```
+python split_models.py Examples/2koc.pdb
+```
+
 ## Benchmarking Scripts
 
 Calculate RMSD:

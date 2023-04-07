@@ -1,9 +1,15 @@
-#!/usr/bin/python3
+#!/usr/bin/python
+
+#Reference: Zion R Perry, Anna Marie Pyle, Chengxin Zhang (2023) Arena: rapid and accurate reconstruction of full atomic RNA structures from coarse-grained models.
 
 '''
-Calculate the RMSD between an input PDB compared to a reference PDB.
+Purpose: Calculate the RMSD between an input PDB compared to a reference PDB.
 Only include atoms present in both structures.
-How to run: python calculate_RMSD.py -r reference.pdb -i input.pdb
+
+Input: Reference and input PDB files
+Output: Prints RMSD
+
+Usage: python calculate_RMSD.py -r reference.pdb -i input.pdb
 '''
 
 import argparse
@@ -54,9 +60,7 @@ for key in in_information.keys():
 		#calculate rmsd
 		count += 1
 		sd += (ref_atom_coord[0]-in_atom_coord[0])**2+(ref_atom_coord[1]-in_atom_coord[1])**2+(ref_atom_coord[2]-in_atom_coord[2])**2
- #           	if key[0] == " P  ":
- #              	P_count += 1
- #   msd = sd/(count-P_count)
+
 msd = sd/count
 rmsd = msd**.5
 

@@ -30,9 +30,9 @@ Note: If the RNA is interacting with other molecules (proteins, ligands, etc), t
 
 ## Special Case: Multiple Models
 
-Split into separate model files before running Arena:
+Split into separate model files, run Arena on individual models, and combine the output into one structure:
 ```
-python split_models.py Examples/2koc.pdb
+python3 split_models.py Examples/2koc.pdb Examples/2koc.output.pdb
 ```
 
 ## Benchmarking Scripts

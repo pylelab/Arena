@@ -26,6 +26,7 @@ To see the help menu:
 ```
 ./Arena
 ```
+Note: If the RNA is interacting with other molecules (proteins, ligands, etc), the user must manually remove the non-RNA chains for the Arena standalone program. Arena can, however, handle multichain RNA inputs without user intervention. On the other hand, the Arena webserver automatically excludes non-RNA residues (https://zhanggroup.org/Arena/).
 
 ## Special Case: Multiple Models
 

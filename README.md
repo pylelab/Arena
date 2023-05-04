@@ -44,7 +44,7 @@ python calculate_RMSD.py -r Examples/5osg2.pdb -i Examples/5osg2.output.pdb
 
 Calculate interaction network fidelity (INF):
 
-Note: the PDB files must contain a chain ID and be within the example directory of properly installed [RNA_assessment](https://github.com/RNA-Puzzles/RNA_assessment/tree/master): 
+Note: the PDB files must contain a chain ID and be within the example directory of [RNA_assessment](https://github.com/RNA-Puzzles/RNA_assessment/tree/master): 
 ```
 python3 RNA_assessment/INF.py RNA_assessment/example/5osg2.A.pdb RNA_assessment/example/5osg2.index RNA_assessment/example/5osg2.output.A.pdb RNA_assessment/example/5osg2.index
 ```

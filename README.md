@@ -46,7 +46,7 @@ Calculate interaction network fidelity (INF):
 ```
 python3 RNA_assessment/INF.py RNA_assessment/example/5osg2.pdb RNA_assessment/example/5osg2.index RNA_assessment/example/5osg2.output.pdb RNA_assessment/example/5osg2.index
 ```
-Note: The PDB files must contain a chain ID and be within the example directory of [RNA_assessment](https://github.com/RNA-Puzzles/RNA_assessment/tree/master): 
+Note: For calculation of INF, the PDB files must contain a chain ID and be within the example directory of [RNA_assessment](https://github.com/RNA-Puzzles/RNA_assessment/tree/master). 
 
 Calculate number of clashes:
 ```

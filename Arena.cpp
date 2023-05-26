@@ -14,6 +14,8 @@ const char* docstring=""
 "        least one atom\n"
 //"    6 - remove non-standard atoms, fill atoms for residues with at least one\n"
 //"        atom, (even for preexisting base atoms) fix incorrect base conformation\n"
+"    7 - remove non-standard atoms, fill atoms for residues with at least one\n"
+"        atom, (even for preexisting atoms) fix conformation\n"
 ;
 
 #include <iostream>
@@ -85,9 +87,11 @@ int main(int argc,char **argv)
     if (option>=6)
     {
         size_t c,r,a;
+        size_t aStart=11;
+        if (option>=7) aStart=0;
         for (c=0; c<pdb_entry.chains.size(); c++)
             for (r=0;r<pdb_entry.chains[c].residues.size();r++)
-                for (a=11;a<pdb_entry.chains[c].residues[r].atoms.size();a++)
+                for (a=aStart;a<pdb_entry.chains[c].residues[r].atoms.size();a++)
                     pdb_entry.chains[c].residues[r].atoms[a].movable=1;
 
         size_t stage;
@@ -118,6 +122,7 @@ int main(int argc,char **argv)
                         filter_bp(bp_vec);
                     }
                     moved+=fixBaseConformation(pdb_entry, ideal_rna, bp_vec);
+                    if (option>=7) moved+=fix_clashes(pdb_entry);
     
                     cout<<"stage"<<stage<<" t="<<t<<" moved="<<moved<<endl;
     	            if (moved==0) break;

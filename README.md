@@ -21,7 +21,7 @@ Running Options:
 
 The default Arena option (5) removes nonstandard atoms, fills in missing atoms for any residues with at least one input atom, and iteratively refines the placement of added atoms (no input atoms are moved). All benchmarking was performed with this option, and most users will find this option suitable for their needs.
 
-The extended Arena option (7) first performs the default Arena run. Should there be any unresolved issues with the structure (discontinuous nucleotides or poor performance metrics), Arena will perform additional rounds of refinement that include moving the input atoms.
+The extended Arena option (7) first performs the default Arena run. Should there be any unresolved issues with the structure (discontinuous nucleotides or poor performance metrics), Arena will perform additional rounds of refinement, where the input atoms are also moved.
 
 The full suite of options is described below:
 ```

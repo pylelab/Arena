@@ -22,7 +22,7 @@ Running Options:
 The default Arena option (5) removes nonstandard atoms, fills in missing atoms for any residues with at least one input atom, and iteratively refines the placement of added atoms (no input atoms are moved). All benchmarking was performed with this option, and most users will find this option suitable for their needs. The extended Arena option (7) first performs the default Arena run. Should there be any unresolved issues with the structure (discontinuous nucleotides or poor performance metrics), Arena will perform additional rounds of refinement that include moving the input atoms.
 
 The full suite of options is described below:
-
+```
 0 - only check missing atoms
 1 - remove non-standard atoms
 2 - remove non-standard atoms and residues with missing atoms
@@ -31,6 +31,7 @@ The full suite of options is described below:
 5 - (default) remove non-standard atoms, fill atoms for residues with at least one atom
 6 - remove non-standard atoms, fill atoms for residues with at least one atom, (even for preexisting base atoms) fix incorrect base conformation
 7 - (extended) remove non-standard atoms, fill atoms for residues with at least one atom, (even for preexisting atoms) fix conformation
+```
 
 Run Arena (default) using one of the provided examples:
 ```
@@ -41,7 +42,7 @@ To see the help menu:
 ```
 ./Arena
 ```
-Note: If the RNA is interacting with other molecules (proteins, ligands, etc), the user must manually remove the non-RNA chains for the Arena standalone program. Arena can, however, handle multichain RNA inputs without user intervention (see below). On the other hand, the [Arena webserver](https://zhanggroup.org/Arena/) automatically excludes non-RNA residues.
+Note: If the RNA is interacting with other molecules (proteins, ligands, etc), the user must manually remove the non-RNA chains for the Arena standalone program. Arena can, however, handle multichain RNA inputs without user intervention (see Multiple Models below). On the other hand, the [Arena webserver](https://zhanggroup.org/Arena/) automatically excludes non-RNA residues.
 
 ## Special Case: Multiple Models
 

@@ -17,7 +17,22 @@ make Arena
 
 ## Usage
 
-Run Arena using one of the provided examples:
+Running Options:
+
+The default Arena option (5) removes nonstandard atoms, fills in missing atoms for any residues with at least one input atom, and iteratively refines the placement of added atoms (no input atoms are moved). All benchmarking was performed with this option, and most users will find this option suitable for their needs. The extended Arena option (7) first performs the default Arena run. Should there be any unresolved issues with the structure (discontinuous nucleotides or poor performance metrics), Arena will perform additional rounds of refinement that include moving the input atoms.
+
+The full suite of options is described below:
+
+0 - only check missing atoms
+1 - remove non-standard atoms
+2 - remove non-standard atoms and residues with missing atoms
+3 - remove non-standard atoms, fill atoms for residues with at least three atoms
+4 - remove non-standard atoms, fill atoms for residues with at least three atoms, remove residues with less than three atoms
+5 - (default) remove non-standard atoms, fill atoms for residues with at least one atom
+6 - remove non-standard atoms, fill atoms for residues with at least one atom, (even for preexisting base atoms) fix incorrect base conformation
+7 - (extended) remove non-standard atoms, fill atoms for residues with at least one atom, (even for preexisting atoms) fix conformation
+
+Run Arena (default) using one of the provided examples:
 ```
 ./Arena Examples/5osg2.P.pdb Examples/5osg2.output.pdb 5
 ```

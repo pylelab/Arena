@@ -23,7 +23,7 @@ The default Arena option (5) removes nonstandard atoms, fills in missing atoms f
 
 The extended Arena option (7) first performs the default Arena run. Should there be any unresolved issues with the structure (discontinuous nucleotides or poor performance metrics), Arena will perform additional rounds of refinement, where the input atoms are also moved.
 
-The full suite of options is described below:
+Available running options are described below:
 ```
 0 - only check missing atoms
 1 - remove non-standard atoms

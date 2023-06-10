@@ -31,7 +31,6 @@ The full suite of options is described below:
 3 - remove non-standard atoms, fill atoms for residues with at least three atoms
 4 - remove non-standard atoms, fill atoms for residues with at least three atoms, remove residues with less than three atoms
 5 - (default) remove non-standard atoms, fill atoms for residues with at least one atom
-6 - remove non-standard atoms, fill atoms for residues with at least one atom, (even for preexisting base atoms) fix incorrect base conformation
 7 - (extended) remove non-standard atoms, fill atoms for residues with at least one atom, (even for preexisting atoms) fix conformation
 ```
 

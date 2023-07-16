@@ -78,5 +78,5 @@ python calculate_MAE.py -r Examples/5osg2.pdb -i Examples/5osg2.output.pdb
 
 ## Reference
 Zion R Perry, Anna Marie Pyle, Chengxin Zhang (2023)
-Arena: rapid and accurate reconstruction of full atomic RNA structures from coarse-grained models.
+Arena: rapid and accurate reconstruction of full atomic RNA structures from coarse-grained models. Journal of Molecular Biology.
 
